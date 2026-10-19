@@ -9,8 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -30,23 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // === FIX: Inisialisasi Database pake URL manual dari strings.xml ===
-        try {
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setApplicationId("1:249616349259:android:c7b5ca42a2e28f2d3f35ce") // app_id lo
-                    .setApiKey("AIzaSyC0q-Sscskn_f8zP2oJ8Q5o2L5y7e9b1c0") // api key lo
-                    .setDatabaseUrl(getString(R.string.firebase_database_url))
-                    .build();
-            
-            // Cek kalau belum diinisialisasi
-            if (FirebaseApp.getApps(this).isEmpty()) {
-                FirebaseApp.initializeApp(this, options);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // ==================================================================
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -75,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         }
         mAuth.signInWithEmailAndPassword(email, pass)
             .addOnSuccessListener(a -> {
-                saveUserToDatabase();
                 Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
@@ -92,29 +72,10 @@ public class MainActivity extends AppCompatActivity {
         }
         mAuth.createUserWithEmailAndPassword(email, pass)
             .addOnSuccessListener(a -> {
-                saveUserToDatabase();
                 Toast.makeText(this, "Register berhasil", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
             })
             .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_LONG).show());
-    }
-
-    private void saveUserToDatabase() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String uid = user.getUid();
-            String email = user.getEmail();
-            String name = email.split("@")[0];
-
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("email", email);
-            userMap.put("name", name);
-            userMap.put("status", "online");
-
-            mDatabase.child("users").child(uid).setValue(userMap)
-                .addOnSuccessListener(aVoid -> Toast.makeText(MainActivity.this, "Data tersimpan di DB!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "DB Gagal: " + e.getMessage(), Toast.LENGTH_LONG).show());
-        }
     }
 }
