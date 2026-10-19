@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- NEW -->
+<resources>
+    <string name="app_name">Neont</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login_success">Login berhasil</string>
+    <string name="logout">Logout</string>
+</resources>
