@@ -23,16 +23,36 @@ jobs:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
 
+      # BIKIN KEYSTORE OTOMATIS DI GITHUB ACTIONS
+      - name: Generate Keystore
+        run: |
+          keytool -genkeypair -v -keystore app/neont-release.keystore \
+          -alias neont -keyalg RSA -keysize 2048 -validity 10000 \
+          -storepass rahasia123 -keypass rahasia123 \
+          -dname "CN=Neont, OU=Dev, O=Neont, L=Jakarta, ST=Jakarta, C=ID"
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
-      - name: Build Release APK
-        run: gradle assembleRelease --no-daemon
+      - name: Build Release APK (Signed)
+        run: |
+          gradle assembleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file=$(pwd)/app/neont-release.keystore \
+            -Pandroid.injected.signing.store.password=rahasia123 \
+            -Pandroid.injected.signing.key.alias=neont \
+            -Pandroid.injected.signing.key.password=rahasia123
 
+      # UPLOAD APK DAN KEYSTORE-NYA
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: neont-release-apk
           path: app/build/outputs/apk/release/*.apk
+
+      - name: Upload Keystore
+        uses: actions/upload-artifact@v4
+        with:
+          name: neont-keystore
+          path: app/neont-release.keystore
