@@ -45,10 +45,10 @@ public class ProfileActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     String name = snapshot.child("name").getValue(String.class);
                     String bio = snapshot.child("bio").getValue(String.class);
-                    String code = snapshot.child("code").getValue(String.class);
+                    String username = snapshot.child("username").getValue(String.class);
                     
                     tvName.setText(name != null ? name : "User");
-                    tvCode.setText(code != null ? code : "Belum ada kode");
+                    tvCode.setText(username != null ? "@" + username : "Belum ada username");
                     tvBio.setText(bio != null ? bio : "Halo! Saya menggunakan Neont.");
                 }
             }
@@ -94,9 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
             builder.show();
         });
 
-        btnSettings.setOnClickListener(v -> {
-            Toast.makeText(this, "Fitur Pengaturan segera hadir!", Toast.LENGTH_SHORT).show();
-        });
+        btnSettings.setOnClickListener(v -> Toast.makeText(this, "Pengaturan segera hadir!", Toast.LENGTH_SHORT).show());
 
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();

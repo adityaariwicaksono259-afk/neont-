@@ -8,24 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class HomeActivity extends AppCompatActivity {
 
     private RecyclerView rvChats;
     private ChatAdapter adapter;
     private List<UserModel> chatList;
-    private DatabaseReference mDb;
-    private String myUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +24,6 @@ public class HomeActivity extends AppCompatActivity {
 
         rvChats = findViewById(R.id.rvChats);
         FloatingActionButton fabNewChat = findViewById(R.id.fabNewChat);
-        mDb = FirebaseDatabase.getInstance().getReference();
-        myUid = FirebaseAuth.getInstance().getUid();
         
         rvChats.setLayoutManager(new LinearLayoutManager(this));
         chatList = new ArrayList<>();
@@ -48,37 +36,13 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setAdapter(adapter);
 
         fabNewChat.setOnClickListener(v -> {
-            try {
-                startActivity(new Intent(HomeActivity.this, NewChatActivity.class));
-            } catch (Exception e) {
-                new AlertDialog.Builder(HomeActivity.this).setMessage(e.toString()).show();
-            }
+            startActivity(new Intent(HomeActivity.this, SearchActivity.class));
         });
 
         findViewById(R.id.navProfile).setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
 
-        // --- INJECT CHAT GLOBAL ---
+        // Inject Chat Global
         chatList.add(new UserModel("GLOBAL", "NEONT REAL", "GLOBAL"));
         adapter.notifyDataSetChanged();
-        // --------------------------
-
-        cekKodeUnik();
-    }
-
-    private void cekKodeUnik() {
-        mDb.child("users").child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists() && !snapshot.hasChild("code")) {
-                    Random random = new Random();
-                    String uniqueCode = "NEO-" + (1000 + random.nextInt(9000));
-                    Map<String, Object> update = new HashMap<>();
-                    update.put("code", uniqueCode);
-                    mDb.child("users").child(myUid).updateChildren(update);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {}
-        });
     }
 }

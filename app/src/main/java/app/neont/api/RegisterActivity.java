@@ -17,7 +17,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText etEmail, etPassword;
+    private EditText etEmail, etPassword, etUsername;
     private Button btnRegister;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -31,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.etEmailReg);
         etPassword = findViewById(R.id.etPasswordReg);
+        etUsername = findViewById(R.id.etUsernameReg);
         btnRegister = findViewById(R.id.btnDoRegister);
 
         btnRegister.setOnClickListener(v -> doRegister());
