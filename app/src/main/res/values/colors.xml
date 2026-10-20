@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="nb_background">#FFD600</color> <!-- Kuning Neobrutalism -->
-    <color name="nb_black">#000000</color>
+    <color name="nb_bg">#F7F4ED</color> <!-- Warna cream premium -->
     <color name="nb_white">#FFFFFF</color>
-    <color name="nb_gray">#E0E0E0</color>
+    <color name="nb_black">#000000</color>
+    <color name="nb_red">#FF4B4B</color> <!-- Merah buat aksen -->
+    <color name="nb_yellow">#FFD600</color>
 </resources>

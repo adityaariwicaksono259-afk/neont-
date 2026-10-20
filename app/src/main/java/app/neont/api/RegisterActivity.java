@@ -63,7 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
                 if (user != null) {
                     saveUserToDatabase(user);
                 }
-                Toast.makeText(this, "Registrasi berhasil!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
             })

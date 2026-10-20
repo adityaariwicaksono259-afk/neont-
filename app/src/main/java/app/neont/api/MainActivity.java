@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         
         mAuth.signInWithEmailAndPassword(email, pass)
             .addOnSuccessListener(a -> {
-                Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
             })

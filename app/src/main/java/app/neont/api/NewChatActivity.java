@@ -1,5 +1,6 @@
 package app.neont.api;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -27,40 +28,46 @@ public class NewChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_chat);
+        try {
+            setContentView(R.layout.activity_new_chat);
+            
+            rvAllUsers = findViewById(R.id.rvAllUsers);
+            TextView menuNewContact = findViewById(R.id.menuNewContact);
+            TextView menuNewGroup = findViewById(R.id.menuNewGroup);
+            
+            mDb = FirebaseDatabase.getInstance().getReference();
+            myUid = FirebaseAuth.getInstance().getUid();
 
-        rvAllUsers = findViewById(R.id.rvAllUsers);
-        TextView menuNewContact = findViewById(R.id.menuNewContact);
-        TextView menuNewGroup = findViewById(R.id.menuNewGroup);
-        
-        mDb = FirebaseDatabase.getInstance().getReference();
-        myUid = FirebaseAuth.getInstance().getUid();
+            rvAllUsers.setLayoutManager(new LinearLayoutManager(this));
+            contactList = new ArrayList<>();
+            
+            adapter = new ChatAdapter(this, contactList, user -> {
+                Intent intent = new Intent(NewChatActivity.this, ChatRoomActivity.class);
+                intent.putExtra("uid", user.getUid());
+                intent.putExtra("name", user.getName());
+                startActivity(intent);
+            });
+            rvAllUsers.setAdapter(adapter);
 
-        rvAllUsers.setLayoutManager(new LinearLayoutManager(this));
-        contactList = new ArrayList<>();
-        
-        adapter = new ChatAdapter(this, contactList, user -> {
-            Intent intent = new Intent(NewChatActivity.this, ChatRoomActivity.class);
-            intent.putExtra("uid", user.getUid());
-            intent.putExtra("name", user.getName());
-            startActivity(intent);
-        });
-        rvAllUsers.setAdapter(adapter);
+            menuNewContact.setOnClickListener(v -> {
+                startActivity(new Intent(this, AddContactActivity.class));
+            });
 
-        // Handle klik "Kontak Baru"
-        menuNewContact.setOnClickListener(v -> {
-            startActivity(new Intent(this, AddContactActivity.class));
-        });
+            menuNewGroup.setOnClickListener(v -> {
+                Toast.makeText(this, "Fitur Grup segera hadir!", Toast.LENGTH_SHORT).show();
+            });
 
-        // Handle klik "Grup Baru"
-        menuNewGroup.setOnClickListener(v -> {
-            Toast.makeText(this, "Fitur Grup segera hadir!", Toast.LENGTH_SHORT).show();
-        });
-
-        loadSavedContacts();
+            loadSavedContacts();
+            
+        } catch (Exception e) {
+            new AlertDialog.Builder(this)
+                .setTitle("Error di NewChatActivity")
+                .setMessage(e.toString())
+                .setPositiveButton("OK", (d, w) -> finish())
+                .show();
+        }
     }
 
-    // Narik data dari database 'contacts' milik kita
     private void loadSavedContacts() {
         mDb.child("contacts").child(myUid).addValueEventListener(new ValueEventListener() {
             @Override
@@ -71,7 +78,6 @@ public class NewChatActivity extends AppCompatActivity {
                     String name = data.child("name").getValue(String.class);
                     String code = data.child("code").getValue(String.class);
                     if (uid != null && name != null) {
-                        // Pake constructor UserModel yang ada (uid, name, email/code)
                         contactList.add(new UserModel(uid, name, code));
                     }
                 }
@@ -79,9 +85,7 @@ public class NewChatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                Toast.makeText(NewChatActivity.this, "Gagal: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+            public void onCancelled(DatabaseError error) {}
         });
     }
 }

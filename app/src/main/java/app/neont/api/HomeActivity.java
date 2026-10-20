@@ -1,8 +1,8 @@
 package app.neont.api;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,11 +47,20 @@ public class HomeActivity extends AppCompatActivity {
         });
         rvChats.setAdapter(adapter);
 
+        // FIX FC: Bungkus pakai try-catch biar error muncul di Dialog
         fabNewChat.setOnClickListener(v -> {
-            startActivity(new Intent(this, NewChatActivity.class));
+            try {
+                Intent intent = new Intent(HomeActivity.this, NewChatActivity.class);
+                startActivity(intent);
+            } catch (Exception e) {
+                new AlertDialog.Builder(HomeActivity.this)
+                    .setTitle("Error Tombol (+)")
+                    .setMessage(e.toString())
+                    .setPositiveButton("OK", null)
+                    .show();
+            }
         });
 
-        // Pancing Kode Unik buat akun lama
         cekKodeUnik();
     }
 
@@ -65,7 +74,6 @@ public class HomeActivity extends AppCompatActivity {
                     Map<String, Object> update = new HashMap<>();
                     update.put("code", uniqueCode);
                     mDb.child("users").child(myUid).updateChildren(update);
-                    Toast.makeText(HomeActivity.this, "Akun lama lo dapet kode: " + uniqueCode, Toast.LENGTH_LONG).show();
                 }
             }
             @Override
