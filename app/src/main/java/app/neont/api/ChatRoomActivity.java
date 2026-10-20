@@ -46,7 +46,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         receiverName = getIntent().getStringExtra("name");
         tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
-        if (senderId != null && receiverId != null) {
+        // LOGIKA ROOM ID KHUSUS GLOBAL
+        if ("GLOBAL".equals(receiverId)) {
+            roomId = "GLOBAL";
+        } else if (senderId != null && receiverId != null) {
             if (senderId.compareTo(receiverId) < 0) {
                 roomId = senderId + "_" + receiverId;
             } else {

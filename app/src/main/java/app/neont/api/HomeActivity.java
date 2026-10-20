@@ -48,13 +48,19 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setAdapter(adapter);
 
         fabNewChat.setOnClickListener(v -> {
-        findViewById(R.id.navProfile).setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
             try {
                 startActivity(new Intent(HomeActivity.this, NewChatActivity.class));
             } catch (Exception e) {
                 new AlertDialog.Builder(HomeActivity.this).setMessage(e.toString()).show();
             }
         });
+
+        findViewById(R.id.navProfile).setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
+
+        // --- INJECT CHAT GLOBAL ---
+        chatList.add(new UserModel("GLOBAL", "NEONT REAL", "GLOBAL"));
+        adapter.notifyDataSetChanged();
+        // --------------------------
 
         cekKodeUnik();
     }
