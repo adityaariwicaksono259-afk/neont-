@@ -34,7 +34,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MessageModel message = messageList.get(position);
         
-        // Validasi anti-crash
         String text = message.getText() != null ? message.getText() : "";
         holder.tvMessageText.setText(text);
 
@@ -42,12 +41,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         holder.tvMessageTime.setText(sdf.format(new Date(message.getTimestamp())));
 
         LinearLayout.LayoutParams containerParams = (LinearLayout.LayoutParams) holder.bubbleContainer.getLayoutParams();
-
-        // Cek pengirim (anti null)
         String sender = message.getSenderId() != null ? message.getSenderId() : "";
 
         if (sender.equals(currentUserId)) {
-            // PESAN SAYA (KANAN)
+            // Pesan Kita (Kanan, Hijau, Centang)
             containerParams.gravity = Gravity.END;
             holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_sent);
             holder.tvStatus.setVisibility(View.VISIBLE);
@@ -64,19 +61,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.tvStatus.setTextColor(0xFF888888); // Abu-abu
             }
         } else {
-            // PESAN ORANG (KIRI)
+            // Pesan Orang (Kiri, Putih)
             containerParams.gravity = Gravity.START;
             holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_received);
             holder.tvStatus.setVisibility(View.GONE);
         }
-
         holder.bubbleContainer.setLayoutParams(containerParams);
     }
 
     @Override
-    public int getItemCount() {
-        return messageList.size();
-    }
+    public int getItemCount() { return messageList.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvMessageText, tvMessageTime, tvStatus;
