@@ -1,5 +1,6 @@
 package app.neont.api;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,47 +33,58 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_room);
-
-        rvMessages = findViewById(R.id.rvMessages);
-        etMessage = findViewById(R.id.etMessage);
-        btnSend = findViewById(R.id.btnSend);
-        TextView tvChatName = findViewById(R.id.tvChatName);
-
-        mDb = FirebaseDatabase.getInstance().getReference();
-        senderId = FirebaseAuth.getInstance().getUid();
         
-        receiverId = getIntent().getStringExtra("uid");
-        receiverName = getIntent().getStringExtra("name");
-        tvChatName.setText(receiverName != null ? receiverName : "Chat");
+        try {
+            setContentView(R.layout.activity_chat_room);
 
-        if ("GLOBAL".equals(receiverId)) {
-            roomId = "GLOBAL";
-        } else if (senderId != null && receiverId != null) {
-            if (senderId.compareTo(receiverId) < 0) {
-                roomId = senderId + "_" + receiverId;
+            rvMessages = findViewById(R.id.rvMessages);
+            etMessage = findViewById(R.id.etMessage);
+            btnSend = findViewById(R.id.btnSend);
+            TextView tvChatName = findViewById(R.id.tvChatName);
+
+            mDb = FirebaseDatabase.getInstance().getReference();
+            senderId = FirebaseAuth.getInstance().getUid();
+            
+            receiverId = getIntent().getStringExtra("uid");
+            receiverName = getIntent().getStringExtra("name");
+            tvChatName.setText(receiverName != null ? receiverName : "Chat");
+
+            if ("GLOBAL".equals(receiverId)) {
+                roomId = "GLOBAL";
+            } else if (senderId != null && receiverId != null) {
+                if (senderId.compareTo(receiverId) < 0) {
+                    roomId = senderId + "_" + receiverId;
+                } else {
+                    roomId = receiverId + "_" + senderId;
+                }
             } else {
-                roomId = receiverId + "_" + senderId;
+                Toast.makeText(this, "Error: User ID kosong", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
             }
-        } else {
-            Toast.makeText(this, "Error: User ID kosong", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
 
-        messageList = new ArrayList<>();
-        adapter = new MessageAdapter(messageList);
-        rvMessages.setLayoutManager(new LinearLayoutManager(this));
-        rvMessages.setAdapter(adapter);
-        
-        btnSend.setOnClickListener(v -> {
-            String msg = etMessage.getText().toString().trim();
-            if (!msg.isEmpty()) {
-                kirimPesan(msg);
-            }
-        });
-        
-        loadPesan();
+            messageList = new ArrayList<>();
+            adapter = new MessageAdapter(messageList);
+            rvMessages.setLayoutManager(new LinearLayoutManager(this));
+            rvMessages.setAdapter(adapter);
+            
+            btnSend.setOnClickListener(v -> {
+                String msg = etMessage.getText().toString().trim();
+                if (!msg.isEmpty()) {
+                    kirimPesan(msg);
+                }
+            });
+            
+            loadPesan();
+            
+        } catch (Exception e) {
+            // NANGKEP ERROR BIAR NGGAK FC
+            new AlertDialog.Builder(this)
+                .setTitle("Error di ChatRoom")
+                .setMessage(e.toString())
+                .setPositiveButton("OK", (d, w) -> finish())
+                .show();
+        }
     }
 
     private void kirimPesan(String text) {
@@ -82,7 +94,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         messageData.put("receiverId", receiverId);
         messageData.put("text", text);
         messageData.put("timestamp", timestamp);
-        messageData.put("status", "sent"); // Centang 1
+        messageData.put("status", "sent");
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
             .addOnSuccessListener(aVoid -> etMessage.setText(""))
@@ -98,8 +110,6 @@ public class ChatRoomActivity extends AppCompatActivity {
                     MessageModel msg = data.getValue(MessageModel.class);
                     if (msg != null) {
                         messageList.add(msg);
-                        
-                        // Tandai "read" (Centang Biru) kalau pesan dari orang lain
                         if (!msg.getSenderId().equals(senderId)) {
                             data.getRef().child("status").setValue("read");
                         }
