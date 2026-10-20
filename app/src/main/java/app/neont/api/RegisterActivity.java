@@ -6,20 +6,17 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
-
     private EditText etEmail, etPassword;
     private Button btnRegister;
     private FirebaseAuth mAuth;
@@ -29,7 +26,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -48,8 +44,6 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Isi semua kolom!", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // VALIDASI PASSWORD KETAT
         if (pass.length() < 8) {
             Toast.makeText(this, "Password minimal 8 karakter!", Toast.LENGTH_SHORT).show();
             return;
@@ -59,11 +53,10 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         if (!Pattern.compile("[^a-zA-Z0-9]").matcher(pass).find()) {
-            Toast.makeText(this, "Password harus ada simbol (contoh: @, #, !)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Password harus ada simbol!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // PROSES DAFTAR KE FIREBASE
         mAuth.createUserWithEmailAndPassword(email, pass)
             .addOnSuccessListener(a -> {
                 FirebaseUser user = mAuth.getCurrentUser();
@@ -81,11 +74,17 @@ public class RegisterActivity extends AppCompatActivity {
         String uid = user.getUid();
         String email = user.getEmail();
         String name = email.split("@")[0];
+        
+        // Generate Kode Unik NEO-XXXX
+        Random random = new Random();
+        int num = 1000 + random.nextInt(9000); // Angka 1000-9999
+        String uniqueCode = "NEO-" + num;
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
         userMap.put("name", name);
         userMap.put("status", "online");
+        userMap.put("code", uniqueCode); // Simpan kode
 
         mDatabase.child("users").child(uid).setValue(userMap);
     }

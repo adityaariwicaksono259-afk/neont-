@@ -2,62 +2,57 @@ package app.neont.api;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private DatabaseReference mDatabase;
+    private RecyclerView rvChats;
+    private ChatAdapter adapter;
+    private List<UserModel> chatList; // Nanti diisi dari riwayat chat
+    private String myUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        TextView tvWelcome = findViewById(R.id.tvWelcome);
-        Button btnLogout = findViewById(R.id.btnLogout);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            tvWelcome.setText("Login berhasil\n" + user.getEmail());
-            
-            // --- PANGGIL FUNGSI SIMPAN DATA DI SINI ---
-            saveUserToDatabase(user);
-        }
-
-        btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+        rvChats = findViewById(R.id.rvChats);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        FloatingActionButton fabNewChat = findViewById(R.id.fabNewChat);
+        myUid = FirebaseAuth.getInstance().getUid();
+        
+        // Setup RecyclerView (Kosong dulu, karena belum ada chat)
+        rvChats.setLayoutManager(new LinearLayoutManager(this));
+        chatList = new ArrayList<>();
+        adapter = new ChatAdapter(this, chatList, user -> {
+            Intent intent = new Intent(HomeActivity.this, ChatRoomActivity.class);
+            intent.putExtra("uid", user.getUid());
+            intent.putExtra("name", user.getName());
+            startActivity(intent);
         });
-    }
+        rvChats.setAdapter(adapter);
 
-    // Fungsi simpan data user dipindah ke sini
-    private void saveUserToDatabase(FirebaseUser user) {
-        String uid = user.getUid();
-        String email = user.getEmail();
-        String name = email.split("@")[0];
+        // Tombol (+) buat buka halaman Pilih Kontak
+        fabNewChat.setOnClickListener(v -> {
+            startActivity(new Intent(this, NewChatActivity.class));
+        });
 
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", email);
-        userMap.put("name", name);
-        userMap.put("status", "online");
-
-        mDatabase.child("users").child(uid).setValue(userMap)
-            .addOnSuccessListener(aVoid -> Toast.makeText(HomeActivity.this, "Data tersimpan di DB!", Toast.LENGTH_SHORT).show())
-            .addOnFailureListener(e -> Toast.makeText(HomeActivity.this, "DB Gagal: " + e.getMessage(), Toast.LENGTH_LONG).show());
+        // Handle klik bottom nav
+        bottomNav.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_chat) {
+                return true;
+            } else {
+                Toast.makeText(this, "Fitur ini segera hadir!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 }
