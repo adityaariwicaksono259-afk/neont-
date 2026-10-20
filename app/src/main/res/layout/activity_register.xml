@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/nb_edittext_bg"
-        android:hint="Password (Min 8, ada huruf besar & simbol)"
+        android:hint="Password (Min 8, ada huruf besar &amp; simbol)"
         android:inputType="textPassword"
         android:padding="16dp"
         android:textColor="@color/nb_black"
