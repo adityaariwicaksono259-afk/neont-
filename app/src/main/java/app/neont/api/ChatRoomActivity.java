@@ -26,6 +26,8 @@ public class ChatRoomActivity extends AppCompatActivity {
     private Button btnSend;
     private DatabaseReference mDb;
     private String senderId, receiverId, receiverName, roomId;
+    private List<MessageModel> messageList;
+    private MessageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +42,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         mDb = FirebaseDatabase.getInstance().getReference();
         senderId = FirebaseAuth.getInstance().getUid();
         
-        // Ambil data dari Intent (dikirim dari HomeActivity)
         receiverId = getIntent().getStringExtra("uid");
         receiverName = getIntent().getStringExtra("name");
         tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
-        // Bikin Room ID unik (urutkan biar konsisten)
         if (senderId != null && receiverId != null) {
             if (senderId.compareTo(receiverId) < 0) {
                 roomId = senderId + "_" + receiverId;
@@ -53,13 +53,15 @@ public class ChatRoomActivity extends AppCompatActivity {
                 roomId = receiverId + "_" + senderId;
             }
         } else {
-            Toast.makeText(this, "Gagal memuat chat: User ID kosong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: User ID kosong", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Tampilan List Pesan (belum ada adapter, kita siapin tempatnya)
+        messageList = new ArrayList<>();
+        adapter = new MessageAdapter(messageList);
         rvMessages.setLayoutManager(new LinearLayoutManager(this));
+        rvMessages.setAdapter(adapter);
         
         btnSend.setOnClickListener(v -> {
             String msg = etMessage.getText().toString().trim();
@@ -68,7 +70,6 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
         
-        // Load pesan realtime
         loadPesan();
     }
 
@@ -81,23 +82,30 @@ public class ChatRoomActivity extends AppCompatActivity {
         messageData.put("timestamp", timestamp);
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
-            .addOnSuccessListener(aVoid -> {
-                etMessage.setText(""); // Bersihin kolom
-            })
-            .addOnFailureListener(e -> Toast.makeText(ChatRoomActivity.this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            .addOnSuccessListener(aVoid -> etMessage.setText(""))
+            .addOnFailureListener(e -> Toast.makeText(this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void loadPesan() {
-        // Placeholder: nanti kita bikin MessageAdapter buat nampilin bubble chat
-        mDb.child("chats").child(roomId).addValueEventListener(new ValueEventListener() {
+        mDb.child("chats").child(roomId).orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                // TODO: Tampilkan chat ke RecyclerView
+                messageList.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    MessageModel msg = data.getValue(MessageModel.class);
+                    if (msg != null) {
+                        messageList.add(msg);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                if (!messageList.isEmpty()) {
+                    rvMessages.scrollToPosition(messageList.size() - 1);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(ChatRoomActivity.this, "Error load pesan: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatRoomActivity.this, "Error load: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
