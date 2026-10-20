@@ -1,7 +1,8 @@
 package app.neont.api;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,69 +31,57 @@ public class ChatRoomActivity extends AppCompatActivity {
     private List<MessageModel> messageList;
     private MessageAdapter adapter;
     private ValueEventListener messageListener;
+    private ValueEventListener typingListener;
+    private TextView tvChatName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ErrorHandler(this));
+        setContentView(R.layout.activity_chat_room);
+
+        rvMessages = findViewById(R.id.rvMessages);
+        etMessage = findViewById(R.id.etMessage);
+        btnSend = findViewById(R.id.btnSend);
+        tvChatName = findViewById(R.id.tvChatName);
+
+        mDb = FirebaseDatabase.getInstance().getReference();
+        senderId = FirebaseAuth.getInstance().getUid();
         
-        // CCTV: Bungkus semua kode pake try-catch
-        try {
-            setContentView(R.layout.activity_chat_room);
+        receiverId = getIntent().getStringExtra("uid");
+        receiverName = getIntent().getStringExtra("name");
+        tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
-            rvMessages = findViewById(R.id.rvMessages);
-            etMessage = findViewById(R.id.etMessage);
-            btnSend = findViewById(R.id.btnSend);
-            TextView tvChatName = findViewById(R.id.tvChatName);
+        if ("GLOBAL".equals(receiverId)) roomId = "GLOBAL";
+        else {
+            if (senderId.compareTo(receiverId) < 0) roomId = senderId + "_" + receiverId;
+            else roomId = receiverId + "_" + senderId;
+        }
 
-            mDb = FirebaseDatabase.getInstance().getReference();
-            senderId = FirebaseAuth.getInstance().getUid();
-            
-            receiverId = getIntent().getStringExtra("uid");
-            receiverName = getIntent().getStringExtra("name");
+        messageList = new ArrayList<>();
+        adapter = new MessageAdapter(messageList);
+        rvMessages.setLayoutManager(new LinearLayoutManager(this));
+        rvMessages.setAdapter(adapter);
+        
+        btnSend.setOnClickListener(v -> {
+            String msg = etMessage.getText().toString().trim();
+            if (!msg.isEmpty()) kirimPesan(msg);
+        });
 
-            tvChatName.setText(receiverName != null ? receiverName : "Chat");
-
-            if ("GLOBAL".equals(receiverId)) {
-                roomId = "GLOBAL";
-            } else {
-                if (senderId.compareTo(receiverId) < 0) {
-                    roomId = senderId + "_" + receiverId;
+        // LOGIKA TYPING: Set true pas ngetik, false pas berhenti
+        etMessage.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    mDb.child("typing").child(roomId).child(senderId).setValue(true);
                 } else {
-                    roomId = receiverId + "_" + senderId;
+                    mDb.child("typing").child(roomId).child(senderId).setValue(false);
                 }
             }
-
-            messageList = new ArrayList<>();
-            adapter = new MessageAdapter(messageList);
-            rvMessages.setLayoutManager(new LinearLayoutManager(this));
-            rvMessages.setAdapter(adapter);
-            
-            btnSend.setOnClickListener(v -> {
-                String msg = etMessage.getText().toString().trim();
-                if (!msg.isEmpty()) {
-                    kirimPesan(msg);
-                }
-            });
-            
-            loadPesan();
-            
-        } catch (Exception e) {
-            // TANGKAP ERROR DAN TAMPILKAN DI LAYAR
-            new AlertDialog.Builder(this)
-                .setTitle("ERROR DI CHAT ROOM")
-                .setMessage(e.toString() + "\n\n" + getStackTrace(e))
-                .setPositiveButton("OK", (d, w) -> finish())
-                .show();
-        }
-    }
-
-    private String getStackTrace(Exception e) {
-        StringBuilder sb = new StringBuilder();
-        for (StackTraceElement element : e.getStackTrace()) {
-            sb.append(element.toString()).append("\n");
-        }
-        return sb.toString();
+            @Override public void afterTextChanged(Editable s) {}
+        });
+        
+        loadPesan();
+        listenTyping();
     }
 
     private void kirimPesan(String text) {
@@ -104,59 +93,59 @@ public class ChatRoomActivity extends AppCompatActivity {
         messageData.put("status", "sent");
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
-            .addOnSuccessListener(aVoid -> etMessage.setText(""))
-            .addOnFailureListener(e -> Toast.makeText(this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            .addOnSuccessListener(aVoid -> etMessage.setText(""));
     }
 
     private void loadPesan() {
         messageListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                try {
-                    messageList.clear();
-                    for (DataSnapshot data : snapshot.getChildren()) {
-                        String sender = data.child("senderId").getValue(String.class);
-                        String text = data.child("text").getValue(String.class);
-                        Long timestamp = data.child("timestamp").getValue(Long.class);
-                        String status = data.child("status").getValue(String.class);
+                messageList.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    String sender = data.child("senderId").getValue(String.class);
+                    String text = data.child("text").getValue(String.class);
+                    Long timestamp = data.child("timestamp").getValue(Long.class);
+                    String status = data.child("status").getValue(String.class);
 
-                        if (text != null && sender != null) {
-                            messageList.add(new MessageModel(data.getKey(), sender, receiverId, text, 
-                                    timestamp != null ? timestamp : 0, status != null ? status : "sent"));
-                            
-                            if (!sender.equals(senderId)) {
-                                data.getRef().child("status").setValue("read");
-                            }
-                        }
+                    if (text != null && sender != null) {
+                        messageList.add(new MessageModel(data.getKey(), sender, receiverId, text, 
+                                timestamp != null ? timestamp : 0, status != null ? status : "sent"));
+                        if (!sender.equals(senderId)) data.getRef().child("status").setValue("read");
                     }
-                    adapter.notifyDataSetChanged();
-                    if (!messageList.isEmpty()) rvMessages.scrollToPosition(messageList.size() - 1);
-                } catch (Exception e) {
-                    new AlertDialog.Builder(ChatRoomActivity.this)
-                        .setTitle("ERROR PARSING DATA")
-                        .setMessage(e.toString())
-                        .setPositiveButton("OK", null)
-                        .show();
                 }
+                adapter.notifyDataSetChanged();
+                if (!messageList.isEmpty()) rvMessages.scrollToPosition(messageList.size() - 1);
             }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                new AlertDialog.Builder(ChatRoomActivity.this)
-                    .setTitle("ERROR DATABASE")
-                    .setMessage("Kode: " + error.getCode() + "\nPesan: " + error.getMessage())
-                    .setPositiveButton("OK", (d, w) -> finish())
-                    .show();
-            }
+            @Override public void onCancelled(DatabaseError error) {}
         };
         mDb.child("chats").child(roomId).orderByChild("timestamp").addValueEventListener(messageListener);
+    }
+
+    private void listenTyping() {
+        typingListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean isTyping = false;
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    String uid = data.getKey();
+                    Boolean typing = data.getValue(Boolean.class);
+                    if (uid != null && !uid.equals(senderId) && typing != null && typing) {
+                        isTyping = true;
+                    }
+                }
+                if (isTyping) tvChatName.setText(receiverName + " (sedang mengetik...)");
+                else tvChatName.setText(receiverName);
+            }
+            @Override public void onCancelled(DatabaseError error) {}
+        };
+        mDb.child("typing").child(roomId).addValueEventListener(typingListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mDb != null && messageListener != null) {
-            mDb.child("chats").child(roomId).removeEventListener(messageListener);
-        }
+        if (mDb != null && messageListener != null) mDb.child("chats").child(roomId).removeEventListener(messageListener);
+        if (mDb != null && typingListener != null) mDb.child("typing").child(roomId).removeEventListener(typingListener);
+        mDb.child("typing").child(roomId).child(senderId).setValue(false);
     }
 }

@@ -1,10 +1,8 @@
 package app.neont.api;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,56 +15,53 @@ import java.util.Locale;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private List<MessageModel> messageList;
     private String currentUserId;
+    private static final int TYPE_SENT = 1;
+    private static final int TYPE_RECEIVED = 2;
 
     public MessageAdapter(List<MessageModel> messageList) {
         this.messageList = messageList;
         this.currentUserId = FirebaseAuth.getInstance().getUid();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        MessageModel msg = messageList.get(position);
+        if (msg.getSenderId() != null && msg.getSenderId().equals(currentUserId)) {
+            return TYPE_SENT;
+        } else {
+            return TYPE_RECEIVED;
+        }
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false);
-        return new ViewHolder(view);
+        int layout = (viewType == TYPE_SENT) ? R.layout.item_message_sent : R.layout.item_message_received;
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        return new ViewHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MessageModel message = messageList.get(position);
+        holder.tvMessageText.setText(message.getText() != null ? message.getText() : "");
         
-        String text = message.getText() != null ? message.getText() : "";
-        holder.tvMessageText.setText(text);
-
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         holder.tvMessageTime.setText(sdf.format(new Date(message.getTimestamp())));
 
-        LinearLayout.LayoutParams containerParams = (LinearLayout.LayoutParams) holder.bubbleContainer.getLayoutParams();
-        String sender = message.getSenderId() != null ? message.getSenderId() : "";
-
-        if (sender.equals(currentUserId)) {
-            // Pesan Kita (Kanan, Hijau, Centang)
-            containerParams.gravity = Gravity.END;
-            holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_sent);
-            holder.tvStatus.setVisibility(View.VISIBLE);
-            
+        if (holder.viewType == TYPE_SENT) {
             String status = message.getStatus();
             if ("read".equals(status)) {
                 holder.tvStatus.setText("✓✓");
-                holder.tvStatus.setTextColor(0xFF34B7F1); // Biru
+                holder.tvStatus.setTextColor(0xFF34B7F1);
             } else if ("delivered".equals(status)) {
                 holder.tvStatus.setText("✓✓");
-                holder.tvStatus.setTextColor(0xFF888888); // Abu-abu
+                holder.tvStatus.setTextColor(0xFF888888);
             } else {
                 holder.tvStatus.setText("✓");
-                holder.tvStatus.setTextColor(0xFF888888); // Abu-abu
+                holder.tvStatus.setTextColor(0xFF888888);
             }
-        } else {
-            // Pesan Orang (Kiri, Putih)
-            containerParams.gravity = Gravity.START;
-            holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_received);
-            holder.tvStatus.setVisibility(View.GONE);
         }
-        holder.bubbleContainer.setLayoutParams(containerParams);
     }
 
     @Override
@@ -74,14 +69,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvMessageText, tvMessageTime, tvStatus;
-        LinearLayout bubbleContainer, bubbleLayout;
-        public ViewHolder(@NonNull View itemView) {
+        int viewType;
+        public ViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
+            this.viewType = viewType;
             tvMessageText = itemView.findViewById(R.id.tvMessageText);
             tvMessageTime = itemView.findViewById(R.id.tvMessageTime);
-            tvStatus = itemView.findViewById(R.id.tvStatus);
-            bubbleContainer = itemView.findViewById(R.id.bubbleContainer);
-            bubbleLayout = itemView.findViewById(R.id.bubbleLayout);
+            if (viewType == TYPE_SENT) {
+                tvStatus = itemView.findViewById(R.id.tvStatus);
+            }
         }
     }
 }
