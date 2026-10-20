@@ -26,11 +26,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public int getItemViewType(int position) {
         MessageModel msg = messageList.get(position);
-        if (msg.getSenderId() != null && msg.getSenderId().equals(currentUserId)) {
-            return TYPE_SENT;
-        } else {
-            return TYPE_RECEIVED;
-        }
+        if (msg.getSenderId() != null && msg.getSenderId().equals(currentUserId)) return TYPE_SENT;
+        else return TYPE_RECEIVED;
     }
 
     @NonNull
@@ -51,15 +48,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         if (holder.viewType == TYPE_SENT) {
             String status = message.getStatus();
-            if ("read".equals(status)) {
-                holder.tvStatus.setText("✓✓");
-                holder.tvStatus.setTextColor(0xFF34B7F1);
-            } else if ("delivered".equals(status)) {
-                holder.tvStatus.setText("✓✓");
-                holder.tvStatus.setTextColor(0xFF888888);
-            } else {
-                holder.tvStatus.setText("✓");
-                holder.tvStatus.setTextColor(0xFF888888);
+            if ("read".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF34B7F1); }
+            else if ("delivered".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF888888); }
+            else { holder.tvStatus.setText("✓"); holder.tvStatus.setTextColor(0xFF888888); }
+        } else {
+            // Tampilin nama pengirim (bisa lo ubah biar narik dari Firebase nanti)
+            if (holder.tvSenderName != null) {
+                holder.tvSenderName.setText("User"); 
             }
         }
     }
@@ -68,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public int getItemCount() { return messageList.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMessageText, tvMessageTime, tvStatus;
+        TextView tvMessageText, tvMessageTime, tvStatus, tvSenderName;
         int viewType;
         public ViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
@@ -77,6 +72,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             tvMessageTime = itemView.findViewById(R.id.tvMessageTime);
             if (viewType == TYPE_SENT) {
                 tvStatus = itemView.findViewById(R.id.tvStatus);
+            } else {
+                tvSenderName = itemView.findViewById(R.id.tvSenderName);
             }
         }
     }

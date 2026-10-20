@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#DCF8C6" /> <!-- Hijau WA -->
-    <corners android:radius="8dp" />
+    <solid android:color="#EEFFDE" /> <!-- Hijau Telegram -->
+    <corners android:topLeftRadius="12dp" android:topRightRadius="12dp" android:bottomLeftRadius="12dp" android:bottomRightRadius="0dp" />
     <stroke android:width="2dp" android:color="#000000" />
 </shape>
