@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nb_background">#FFD600</color> <!-- Kuning Neobrutalism -->
+    <color name="nb_black">#000000</color>
+    <color name="nb_white">#FFFFFF</color>
+    <color name="nb_gray">#E0E0E0</color>
+</resources>
