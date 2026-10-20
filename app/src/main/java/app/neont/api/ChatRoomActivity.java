@@ -34,6 +34,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ErrorHandler(this));
         
         // CCTV: Bungkus semua kode pake try-catch
         try {
