@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +26,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Pasang Jaring Pengaman Global
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this));
+
+        // Cek kalau ada error dari crash sebelumnya
+        if (getIntent().hasExtra("error_crash")) {
+            String error = getIntent().getStringExtra("error_crash");
+            new AlertDialog.Builder(this)
+                .setTitle("FATAL ERROR")
+                .setMessage(error)
+                .setPositiveButton("OK", null)
+                .show();
+        }
 
         if (SecurityUtils.isRooted() || SecurityUtils.isEmulator()) {
             showBannedDialog();
@@ -48,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         tvGoToRegister = findViewById(R.id.tvGoToRegister);
         ivTogglePass = findViewById(R.id.ivTogglePass);
 
-        // Logika Lihat Password
         ivTogglePass.setOnClickListener(v -> {
             if (isPasswordVisible) {
                 etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -59,18 +71,15 @@ public class MainActivity extends AppCompatActivity {
                 ivTogglePass.setImageResource(R.drawable.ic_eye_closed);
                 isPasswordVisible = true;
             }
-            etPassword.setSelection(etPassword.length()); // Pindah kursor ke akhir
+            etPassword.setSelection(etPassword.length());
         });
 
         btnLogin.setOnClickListener(v -> {
-            // Animasi Klik
             v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.btn_click));
             login();
         });
         
-        tvGoToRegister.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-        });
+        tvGoToRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     private void showBannedDialog() {
