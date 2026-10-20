@@ -48,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setAdapter(adapter);
 
         fabNewChat.setOnClickListener(v -> {
+        findViewById(R.id.navProfile).setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
             try {
                 startActivity(new Intent(HomeActivity.this, NewChatActivity.class));
             } catch (Exception e) {

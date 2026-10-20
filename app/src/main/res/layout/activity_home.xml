@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/nb_bg">
 
-    <!-- Toolbar Atas -->
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- List Chat -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChats"
         android:layout_width="match_parent"
@@ -34,7 +32,6 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/bottomNav" />
 
-    <!-- FAB (+) dengan Shadow -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNewChat"
         android:layout_width="wrap_content"
@@ -47,7 +44,6 @@
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bottom Nav -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -57,25 +53,38 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Pakai selectableItemBackground biar ada animasi pas di-tap -->
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/nb_black"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/nb_black"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/nb_black"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pembaruan" android:textSize="12sp" android:textColor="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pembaruan" android:textSize="11sp" android:textColor="#666666"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_neonty_box" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Neonty" android:textSize="12sp" android:textColor="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Neonty" android:textSize="11sp" android:textColor="#666666"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Panggilan" android:textSize="12sp" android:textColor="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Panggilan" android:textSize="11sp" android:textColor="#666666"/>
         </LinearLayout>
+
+        <!-- TAB PROFIL BARU -->
+        <LinearLayout 
+            android:id="@+id/navProfile"
+            android:layout_width="0dp" 
+            android:layout_height="match_parent" 
+            android:layout_weight="1" 
+            android:orientation="vertical" 
+            android:gravity="center" 
+            android:background="?attr/selectableItemBackground">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="11sp" android:textColor="#666666"/>
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
