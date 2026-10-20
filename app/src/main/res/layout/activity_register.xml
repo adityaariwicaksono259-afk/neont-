@@ -7,50 +7,14 @@
     android:padding="32dp"
     android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DAFTAR"
-        android:textColor="@color/nb_black"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="32dp" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="DAFTAR" android:textColor="@color/nb_black" android:textSize="36sp" android:textStyle="bold" android:layout_marginBottom="32dp" />
 
-    <EditText
-        android:id="@+id/etEmailReg"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/nb_box_white"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="16dp"
-        android:textColor="@color/nb_black"
-        android:layout_marginBottom="16dp"
-        android:importantForAutofill="no"
-        android:autofillHints="" />
+    <EditText android:id="@+id/etUsernameReg" android:layout_width="match_parent" android:layout_height="60dp" android:background="@drawable/nb_box_white" android:hint="Username (tanpa @)" android:inputType="text" android:padding="16dp" android:layout_marginBottom="16dp" android:importantForAutofill="no" />
 
-    <EditText
-        android:id="@+id/etPasswordReg"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/nb_box_white"
-        android:hint="Password (Min 8, ada huruf besar &amp; simbol)"
-        android:inputType="textPassword"
-        android:padding="16dp"
-        android:textColor="@color/nb_black"
-        android:layout_marginBottom="32dp"
-        android:importantForAutofill="no"
-        android:autofillHints="" />
+    <EditText android:id="@+id/etEmailReg" android:layout_width="match_parent" android:layout_height="60dp" android:background="@drawable/nb_box_white" android:hint="Email" android:inputType="textEmailAddress" android:padding="16dp" android:layout_marginBottom="16dp" android:importantForAutofill="no" />
 
-    <Button
-        android:id="@+id/btnDoRegister"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/nb_button_bg"
-        android:text="DAFTAR SEKARANG"
-        android:textColor="@color/nb_white"
-        android:textStyle="bold"
-        android:foreground="?attr/selectableItemBackground"
-        android:stateListAnimator="@null" />
+    <EditText android:id="@+id/etPasswordReg" android:layout_width="match_parent" android:layout_height="60dp" android:background="@drawable/nb_box_white" android:hint="Password (Min 8, ada huruf besar &amp; simbol)" android:inputType="textPassword" android:padding="16dp" android:layout_marginBottom="32dp" android:importantForAutofill="no" />
+
+    <Button android:id="@+id/btnDoRegister" android:layout_width="match_parent" android:layout_height="60dp" android:background="@drawable/nb_button_bg" android:text="DAFTAR SEKARANG" android:textColor="@color/nb_white" android:textStyle="bold" android:foreground="?attr/selectableItemBackground" android:stateListAnimator="@null" />
 
 </LinearLayout>
