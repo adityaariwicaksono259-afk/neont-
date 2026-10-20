@@ -29,6 +29,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     private String senderId, receiverId, receiverName, roomId;
     private List<MessageModel> messageList;
     private MessageAdapter adapter;
+    private ValueEventListener messageListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +48,18 @@ public class ChatRoomActivity extends AppCompatActivity {
             
             receiverId = getIntent().getStringExtra("uid");
             receiverName = getIntent().getStringExtra("name");
+            
+            if (senderId == null) {
+                Toast.makeText(this, "Sesi habis, login ulang", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
             tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
             if ("GLOBAL".equals(receiverId)) {
                 roomId = "GLOBAL";
-            } else if (senderId != null && receiverId != null) {
+            } else if (receiverId != null) {
                 if (senderId.compareTo(receiverId) < 0) {
                     roomId = senderId + "_" + receiverId;
                 } else {
@@ -78,7 +86,6 @@ public class ChatRoomActivity extends AppCompatActivity {
             loadPesan();
             
         } catch (Exception e) {
-            // NANGKEP ERROR BIAR NGGAK FC
             new AlertDialog.Builder(this)
                 .setTitle("Error di ChatRoom")
                 .setMessage(e.toString())
@@ -102,22 +109,27 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     private void loadPesan() {
-        mDb.child("chats").child(roomId).orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
+        messageListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                messageList.clear();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    MessageModel msg = data.getValue(MessageModel.class);
-                    if (msg != null) {
-                        messageList.add(msg);
-                        if (!msg.getSenderId().equals(senderId)) {
-                            data.getRef().child("status").setValue("read");
+                try {
+                    messageList.clear();
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        MessageModel msg = data.getValue(MessageModel.class);
+                        if (msg != null && msg.getText() != null) {
+                            messageList.add(msg);
+                            // Update read status
+                            if (!msg.getSenderId().equals(senderId)) {
+                                data.getRef().child("status").setValue("read");
+                            }
                         }
                     }
-                }
-                adapter.notifyDataSetChanged();
-                if (!messageList.isEmpty()) {
-                    rvMessages.scrollToPosition(messageList.size() - 1);
+                    adapter.notifyDataSetChanged();
+                    if (!messageList.isEmpty()) {
+                        rvMessages.scrollToPosition(messageList.size() - 1);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -125,6 +137,17 @@ public class ChatRoomActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {
                 Toast.makeText(ChatRoomActivity.this, "Error load: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+        
+        mDb.child("chats").child(roomId).orderByChild("timestamp").addValueEventListener(messageListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Hapus listener biar nggak memory leak (penyebab FC kedua)
+        if (mDb != null && messageListener != null) {
+            mDb.child("chats").child(roomId).removeEventListener(messageListener);
+        }
     }
 }

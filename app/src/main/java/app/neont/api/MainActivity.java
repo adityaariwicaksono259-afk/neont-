@@ -27,18 +27,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Pasang Jaring Pengaman Global
+        // Pasang Jaring Pengaman (tanpa dialog debug)
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this));
-
-        // Cek kalau ada error dari crash sebelumnya
-        if (getIntent().hasExtra("error_crash")) {
-            String error = getIntent().getStringExtra("error_crash");
-            new AlertDialog.Builder(this)
-                .setTitle("FATAL ERROR")
-                .setMessage(error)
-                .setPositiveButton("OK", null)
-                .show();
-        }
 
         if (SecurityUtils.isRooted() || SecurityUtils.isEmulator()) {
             showBannedDialog();
@@ -85,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private void showBannedDialog() {
         new AlertDialog.Builder(this)
             .setTitle("Akses Ditolak")
-            .setMessage("Aplikasi ini tidak dapat berjalan di perangkat yang telah dimodifikasi (Root) atau Emulator.\n\nIni demi keamanan data Anda.")
+            .setMessage("Aplikasi ini tidak dapat berjalan di perangkat yang telah dimodifikasi (Root) atau Emulator.")
             .setCancelable(false)
             .setPositiveButton("Keluar", (dialog, which) -> finishAffinity())
             .show();
