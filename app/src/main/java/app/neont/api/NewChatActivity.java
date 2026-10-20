@@ -3,7 +3,7 @@ package app.neont.api;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,8 +32,8 @@ public class NewChatActivity extends AppCompatActivity {
             setContentView(R.layout.activity_new_chat);
             
             rvAllUsers = findViewById(R.id.rvAllUsers);
-            TextView menuNewContact = findViewById(R.id.menuNewContact);
-            TextView menuNewGroup = findViewById(R.id.menuNewGroup);
+            LinearLayout menuNewContact = findViewById(R.id.menuNewContact);
+            LinearLayout menuNewGroup = findViewById(R.id.menuNewGroup);
             
             mDb = FirebaseDatabase.getInstance().getReference();
             myUid = FirebaseAuth.getInstance().getUid();

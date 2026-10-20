@@ -1,5 +1,6 @@
 package app.neont.api;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // --- CEK KEAMANAN DULU ---
+        if (SecurityUtils.isRooted() || SecurityUtils.isEmulator()) {
+            showBannedDialog();
+            return; // Hentikan pembuatan UI
+        }
+        // -------------------------
+
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
@@ -42,6 +51,15 @@ public class MainActivity extends AppCompatActivity {
         tvGoToRegister.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
         });
+    }
+
+    private void showBannedDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle("Akses Ditolak")
+            .setMessage("Aplikasi ini tidak dapat berjalan di perangkat yang telah dimodifikasi (Root) atau Emulator.\n\nIni demi keamanan data Anda.")
+            .setCancelable(false)
+            .setPositiveButton("Keluar", (dialog, which) -> finishAffinity())
+            .show();
     }
 
     private void login() {
