@@ -33,23 +33,30 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MessageModel message = messageList.get(position);
-        holder.tvMessageText.setText(message.getText());
+        
+        // Validasi anti-crash
+        String text = message.getText() != null ? message.getText() : "";
+        holder.tvMessageText.setText(text);
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         holder.tvMessageTime.setText(sdf.format(new Date(message.getTimestamp())));
 
         LinearLayout.LayoutParams containerParams = (LinearLayout.LayoutParams) holder.bubbleContainer.getLayoutParams();
 
-        if (message.getSenderId().equals(currentUserId)) {
+        // Cek pengirim (anti null)
+        String sender = message.getSenderId() != null ? message.getSenderId() : "";
+
+        if (sender.equals(currentUserId)) {
             // PESAN SAYA (KANAN)
             containerParams.gravity = Gravity.END;
             holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_sent);
             holder.tvStatus.setVisibility(View.VISIBLE);
             
-            if ("read".equals(message.getStatus())) {
+            String status = message.getStatus();
+            if ("read".equals(status)) {
                 holder.tvStatus.setText("✓✓");
                 holder.tvStatus.setTextColor(0xFF34B7F1); // Biru
-            } else if ("delivered".equals(message.getStatus())) {
+            } else if ("delivered".equals(status)) {
                 holder.tvStatus.setText("✓✓");
                 holder.tvStatus.setTextColor(0xFF888888); // Abu-abu
             } else {
@@ -60,7 +67,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             // PESAN ORANG (KIRI)
             containerParams.gravity = Gravity.START;
             holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_received);
-            holder.tvStatus.setVisibility(View.GONE); // Orang lain nggak liat centang
+            holder.tvStatus.setVisibility(View.GONE);
         }
 
         holder.bubbleContainer.setLayoutParams(containerParams);
