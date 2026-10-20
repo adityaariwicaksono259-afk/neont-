@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/nb_background">
 
-    <!-- Toolbar Atas mirip WA -->
+    <!-- Toolbar Atas -->
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#075E54"
+        android:background="@color/nb_black"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="16dp"
@@ -18,13 +18,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Neont"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:text="NEONT"
+            android:textColor="@color/nb_white"
+            android:textSize="22sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- List Chat (RecyclerView) -->
+    <!-- List Chat -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChats"
         android:layout_width="match_parent"
@@ -32,24 +32,71 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/bottomNav" />
 
-    <!-- Floating Action Button buat Chat Baru -->
+    <!-- FAB Plus (+) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNewChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_dialog_email"
-        android:backgroundTint="#25D366"
+        android:src="@drawable/ic_wa_plus"
+        app:tint="#000000"
+        app:backgroundTint="#FFD600"
+        app:borderWidth="3dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <!-- Bottom Nav Custom (Neobrutalism) -->
+    <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="70dp"
+        android:background="@color/nb_white"
+        android:orientation="horizontal"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- Tab Chat -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="#000000"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="12sp" android:textStyle="bold" android:textColor="#000000"/>
+        </LinearLayout>
+
+        <!-- Tab Pembaruan -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pembaruan" android:textSize="12sp" android:textColor="#666666"/>
+        </LinearLayout>
+
+        <!-- Tab Neonty (Placeholder) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_group" app:tint="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Neonty" android:textSize="12sp" android:textColor="#666666"/>
+        </LinearLayout>
+
+        <!-- Tab Panggilan -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="#666666"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Panggilan" android:textSize="12sp" android:textColor="#666666"/>
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

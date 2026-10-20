@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/nav_chat" android:title="Chat" />
-    <item android:id="@+id/nav_updates" android:title="Pembaruan" />
-    <item android:id="@+id/nav_neonty" android:title="Neonty" />
-    <item android:id="@+id/nav_calls" android:title="Panggilan" />
-</menu>

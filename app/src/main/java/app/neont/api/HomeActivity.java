@@ -6,17 +6,25 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class HomeActivity extends AppCompatActivity {
 
     private RecyclerView rvChats;
     private ChatAdapter adapter;
-    private List<UserModel> chatList; // Nanti diisi dari riwayat chat
+    private List<UserModel> chatList;
+    private DatabaseReference mDb;
     private String myUid;
 
     @Override
@@ -25,11 +33,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         rvChats = findViewById(R.id.rvChats);
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         FloatingActionButton fabNewChat = findViewById(R.id.fabNewChat);
+        mDb = FirebaseDatabase.getInstance().getReference();
         myUid = FirebaseAuth.getInstance().getUid();
         
-        // Setup RecyclerView (Kosong dulu, karena belum ada chat)
         rvChats.setLayoutManager(new LinearLayoutManager(this));
         chatList = new ArrayList<>();
         adapter = new ChatAdapter(this, chatList, user -> {
@@ -40,19 +47,29 @@ public class HomeActivity extends AppCompatActivity {
         });
         rvChats.setAdapter(adapter);
 
-        // Tombol (+) buat buka halaman Pilih Kontak
         fabNewChat.setOnClickListener(v -> {
             startActivity(new Intent(this, NewChatActivity.class));
         });
 
-        // Handle klik bottom nav
-        bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_chat) {
-                return true;
-            } else {
-                Toast.makeText(this, "Fitur ini segera hadir!", Toast.LENGTH_SHORT).show();
-                return false;
+        // Pancing Kode Unik buat akun lama
+        cekKodeUnik();
+    }
+
+    private void cekKodeUnik() {
+        mDb.child("users").child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists() && !snapshot.hasChild("code")) {
+                    Random random = new Random();
+                    String uniqueCode = "NEO-" + (1000 + random.nextInt(9000));
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("code", uniqueCode);
+                    mDb.child("users").child(myUid).updateChildren(update);
+                    Toast.makeText(HomeActivity.this, "Akun lama lo dapet kode: " + uniqueCode, Toast.LENGTH_LONG).show();
+                }
             }
+            @Override
+            public void onCancelled(DatabaseError error) {}
         });
     }
 }
