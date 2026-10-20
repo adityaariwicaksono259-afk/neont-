@@ -52,7 +52,7 @@
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@drawable/nb_white"
+        android:background="@color/nb_white"
         android:text="REGISTER"
         android:textColor="@color/nb_black"
         android:textStyle="bold" />
