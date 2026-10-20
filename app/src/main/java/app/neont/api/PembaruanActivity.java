@@ -13,7 +13,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PembaruanActivity extends AppCompatActivity {
 
@@ -45,7 +47,6 @@ public class PembaruanActivity extends AppCompatActivity {
         rvChannels.setLayoutManager(new LinearLayoutManager(this));
         rvChannels.setAdapter(channelAdapter);
 
-        // Tombol Bikin Story (Klik Avatar "Story saya")
         findViewById(R.id.layoutStorySaya).setOnClickListener(v -> bikinStory());
 
         loadStories();
@@ -57,21 +58,28 @@ public class PembaruanActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
             .setTitle("Siapa yang bisa lihat story ini?")
             .setItems(privacyOptions, (dialog, which) -> {
-                String privacy = "everyone";
-                if (which == 1) privacy = "contacts";
-                else if (which == 2) privacy = "close_friends";
-                else if (which == 3) privacy = "selected";
+                // FIX: Bikin variabel final biar bisa dipake di lambda
+                final String finalPrivacy;
+                if (which == 1) finalPrivacy = "contacts";
+                else if (which == 2) finalPrivacy = "close_friends";
+                else if (which == 3) finalPrivacy = "selected";
+                else finalPrivacy = "everyone";
 
-                // Simpan Story ke Firebase (Sementara teks dulu)
-                String storyId = mDb.child("stories").child(myUid).push().getKey();
-                java.util.Map<String, Object> storyData = new java.util.HashMap<>();
+                final String storyId = mDb.child("stories").child(myUid).push().getKey();
+                
+                Map<String, Object> storyData = new HashMap<>();
                 storyData.put("name", "Status saya");
                 storyData.put("timestamp", System.currentTimeMillis());
-                storyData.put("privacy", privacy);
+                storyData.put("privacy", finalPrivacy);
                 
                 if (storyId != null) {
                     mDb.child("stories").child(myUid).child(storyId).setValue(storyData)
-                        .addOnSuccessListener(aVoid -> Toast.makeText(this, "Story Diposting! (" + privacy + ")", Toast.LENGTH_SHORT).show());
+                        .addOnSuccessListener(aVoid -> 
+                            Toast.makeText(PembaruanActivity.this, "Story Diposting! (" + finalPrivacy + ")", Toast.LENGTH_SHORT).show()
+                        )
+                        .addOnFailureListener(e -> 
+                            Toast.makeText(PembaruanActivity.this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        );
                 }
             })
             .show();
@@ -84,7 +92,6 @@ public class PembaruanActivity extends AppCompatActivity {
                 storyList.clear();
                 long now = System.currentTimeMillis();
                 
-                // Ambil list kontak kita dulu (buat ngecek privasi "contacts")
                 mDb.child("contacts").child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot contactsSnap) {
@@ -98,17 +105,11 @@ public class PembaruanActivity extends AppCompatActivity {
                                 String privacy = story.child("privacy").getValue(String.class);
                                 String name = story.child("name").getValue(String.class);
                                 
-                                // Cek Expired 24 Jam
                                 if (timestamp != null && (now - timestamp) < (24 * 60 * 60 * 1000)) {
-                                    // LOGIKA FILTER PRIVASI
                                     boolean canView = false;
-                                    if (uid.equals(myUid)) canView = true; // Story sendiri selalu keliatan
+                                    if (uid != null && uid.equals(myUid)) canView = true;
                                     else if ("everyone".equals(privacy)) canView = true;
                                     else if ("contacts".equals(privacy) && myContacts.contains(uid)) canView = true;
-                                    else if ("selected".equals(privacy)) {
-                                        // Nanti kita cek list allowedUsers, sementara false dulu
-                                        canView = false; 
-                                    }
 
                                     if (canView) {
                                         storyList.add(new StoryModel(uid, name, null, timestamp, privacy, null));
