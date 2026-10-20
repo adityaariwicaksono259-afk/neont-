@@ -48,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setAdapter(adapter);
 
         findViewById(R.id.navProfile).setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
+        findViewById(R.id.navPembaruan).setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, PembaruanActivity.class)));
 
         // Listener Search di Home
         etHomeSearch.addTextChangedListener(new TextWatcher() {

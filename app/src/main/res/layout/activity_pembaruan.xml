@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/nb_bg">
+
+    <!-- Header Pembaruan -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Pembaruan"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/nb_black"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="@color/nb_white"
+        android:elevation="8dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Status/Story (Horizontal) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/nb_black"
+                android:padding="16dp"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Kartu Status Saya -->
+                    <LinearLayout
+                        android:layout_width="120dp"
+                        android:layout_height="180dp"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_story_card"
+                        android:gravity="bottom"
+                        android:padding="8dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_wa_profile"
+                            android:background="@drawable/bg_avatar_circle"
+                            android:padding="6dp"
+                            android:layout_gravity="top|start"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Status saya"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <!-- Dummy Story Orang Lain -->
+                    <include layout="@layout/item_story" />
+                    <include layout="@layout/item_story" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Saluran (Channel) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saluran"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/nb_black"
+                android:padding="16dp"/>
+
+            <!-- Dummy List Saluran -->
+            <include layout="@layout/item_channel" />
+            <include layout="@layout/item_channel" />
+            <include layout="@layout/item_channel" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
