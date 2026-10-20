@@ -26,21 +26,37 @@
         android:padding="16dp"
         android:textColor="@color/nb_black"
         android:layout_marginBottom="16dp"
-        android:importantForAutofill="no"
-        android:autofillHints="" />
+        android:importantForAutofill="no" />
 
-    <EditText
-        android:id="@+id/etPassword"
+    <!-- Kolom Password dengan Ikon Vektor -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/nb_box_white"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="16dp"
-        android:textColor="@color/nb_black"
-        android:layout_marginBottom="32dp"
-        android:importantForAutofill="no"
-        android:autofillHints="" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="32dp">
+        
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="16dp"
+            android:textColor="@color/nb_black"
+            android:importantForAutofill="no" />
+            
+        <ImageView
+            android:id="@+id/ivTogglePass"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_eye_open"
+            android:padding="4dp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnLogin"
@@ -50,8 +66,6 @@
         android:text="LOGIN"
         android:textColor="@color/nb_white"
         android:textStyle="bold"
-        android:foreground="?attr/selectableItemBackground"
-        android:stateListAnimator="@null"
         android:layout_marginBottom="16dp" />
 
     <TextView
