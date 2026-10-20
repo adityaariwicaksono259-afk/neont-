@@ -52,7 +52,7 @@ public class AddContactActivity extends AppCompatActivity {
                     for (DataSnapshot userSnap : snapshot.getChildren()) {
                         String targetUid = userSnap.getKey();
                         if (targetUid != null && targetUid.equals(myUid)) {
-                            Toast.makeText(this, "Ini kode lo sendiri, Tuan!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "goblok", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -70,7 +70,7 @@ public class AddContactActivity extends AppCompatActivity {
                             .addOnFailureListener(e -> Toast.makeText(this, "Gagal simpan: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 } else {
-                    Toast.makeText(this, "Kode tidak ditemukan. Pastikan kode benar.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "kontak tidak ditemukan", Toast.LENGTH_SHORT).show();
                 }
             })
             .addOnFailureListener(e -> Toast.makeText(this, "Error database: " + e.getMessage(), Toast.LENGTH_SHORT).show());
