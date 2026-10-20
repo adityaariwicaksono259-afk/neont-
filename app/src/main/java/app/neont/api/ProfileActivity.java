@@ -94,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
             builder.show();
         });
 
-        btnSettings.setOnClickListener(v -> Toast.makeText(this, "Pengaturan segera hadir!", Toast.LENGTH_SHORT).show());
+        btnSettings.setOnClickListener(v -> startActivity(new android.content.Intent(this, SettingsActivity.class)));
 
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
