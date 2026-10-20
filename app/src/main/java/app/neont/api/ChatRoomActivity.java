@@ -80,7 +80,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
         
-        loadPesan();
+        loadPesanAman();
     }
 
     private void kirimPesan(String text) {
@@ -97,29 +97,48 @@ public class ChatRoomActivity extends AppCompatActivity {
             .addOnFailureListener(e -> Toast.makeText(this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void loadPesan() {
+    // FUNGSI BARU: Baca data manual (Anti Crash)
+    private void loadPesanAman() {
         messageListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                messageList.clear();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    MessageModel msg = data.getValue(MessageModel.class);
-                    if (msg != null) {
-                        messageList.add(msg);
-                        if (!msg.getSenderId().equals(senderId)) {
-                            data.getRef().child("status").setValue("read");
+                try {
+                    messageList.clear();
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        // Baca manual satu-satu, jangan pakai Model Class
+                        String id = data.getKey();
+                        String sender = data.child("senderId").getValue(String.class);
+                        String text = data.child("text").getValue(String.class);
+                        Long timestamp = data.child("timestamp").getValue(Long.class);
+                        String status = data.child("status").getValue(String.class);
+
+                        if (text != null && sender != null) {
+                            MessageModel msg = new MessageModel(
+                                id, sender, receiverId, text, 
+                                timestamp != null ? timestamp : 0, 
+                                status != null ? status : "sent"
+                            );
+                            messageList.add(msg);
+
+                            // Update read kalau dari orang lain
+                            if (!sender.equals(senderId)) {
+                                data.getRef().child("status").setValue("read");
+                            }
                         }
                     }
-                }
-                adapter.notifyDataSetChanged();
-                if (!messageList.isEmpty()) {
-                    rvMessages.scrollToPosition(messageList.size() - 1);
+                    adapter.notifyDataSetChanged();
+                    if (!messageList.isEmpty()) {
+                        rvMessages.scrollToPosition(messageList.size() - 1);
+                    }
+                } catch (Exception e) {
+                    // Kalau error parsing, munculin Toast, jangan biarin crash
+                    Toast.makeText(ChatRoomActivity.this, "Parse Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(ChatRoomActivity.this, "Error load: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatRoomActivity.this, "DB Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
         
