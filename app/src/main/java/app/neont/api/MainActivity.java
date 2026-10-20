@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Pasang Jaring Pengaman (tanpa dialog debug)
-        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this));
 
         if (SecurityUtils.isRooted() || SecurityUtils.isEmulator()) {
             showBannedDialog();

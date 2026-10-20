@@ -33,6 +33,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this));
         setContentView(R.layout.activity_chat_room);
 
         rvMessages = findViewById(R.id.rvMessages);
