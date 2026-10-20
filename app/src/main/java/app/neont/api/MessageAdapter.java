@@ -35,28 +35,35 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         MessageModel message = messageList.get(position);
         holder.tvMessageText.setText(message.getText());
 
-        // Format Jam
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         holder.tvMessageTime.setText(sdf.format(new Date(message.getTimestamp())));
 
-        // Layout Gravity: Kanan (Saya) atau Kiri (Teman)
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.tvMessageText.getLayoutParams();
-        LinearLayout.LayoutParams timeParams = (LinearLayout.LayoutParams) holder.tvMessageTime.getLayoutParams();
+        LinearLayout.LayoutParams containerParams = (LinearLayout.LayoutParams) holder.bubbleContainer.getLayoutParams();
 
         if (message.getSenderId().equals(currentUserId)) {
-            params.gravity = Gravity.END;
-            timeParams.gravity = Gravity.END;
-            holder.tvMessageText.setBackgroundResource(R.drawable.nb_box_white); // Sementara sama, nanti kita bedain warna
-            holder.tvMessageText.setTextColor(0xFF000000); // Warna teks hitam
+            // PESAN SAYA (KANAN)
+            containerParams.gravity = Gravity.END;
+            holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_sent);
+            holder.tvStatus.setVisibility(View.VISIBLE);
+            
+            if ("read".equals(message.getStatus())) {
+                holder.tvStatus.setText("✓✓");
+                holder.tvStatus.setTextColor(0xFF34B7F1); // Biru
+            } else if ("delivered".equals(message.getStatus())) {
+                holder.tvStatus.setText("✓✓");
+                holder.tvStatus.setTextColor(0xFF888888); // Abu-abu
+            } else {
+                holder.tvStatus.setText("✓");
+                holder.tvStatus.setTextColor(0xFF888888); // Abu-abu
+            }
         } else {
-            params.gravity = Gravity.START;
-            timeParams.gravity = Gravity.START;
-            holder.tvMessageText.setBackgroundResource(R.drawable.nb_box_white);
-            holder.tvMessageText.setTextColor(0xFF000000);
+            // PESAN ORANG (KIRI)
+            containerParams.gravity = Gravity.START;
+            holder.bubbleLayout.setBackgroundResource(R.drawable.bg_bubble_received);
+            holder.tvStatus.setVisibility(View.GONE); // Orang lain nggak liat centang
         }
 
-        holder.tvMessageText.setLayoutParams(params);
-        holder.tvMessageTime.setLayoutParams(timeParams);
+        holder.bubbleContainer.setLayoutParams(containerParams);
     }
 
     @Override
@@ -65,11 +72,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMessageText, tvMessageTime;
+        TextView tvMessageText, tvMessageTime, tvStatus;
+        LinearLayout bubbleContainer, bubbleLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvMessageText = itemView.findViewById(R.id.tvMessageText);
             tvMessageTime = itemView.findViewById(R.id.tvMessageTime);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
+            bubbleContainer = itemView.findViewById(R.id.bubbleContainer);
+            bubbleLayout = itemView.findViewById(R.id.bubbleLayout);
         }
     }
 }

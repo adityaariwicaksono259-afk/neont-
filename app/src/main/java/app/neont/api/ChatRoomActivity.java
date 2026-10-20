@@ -46,7 +46,6 @@ public class ChatRoomActivity extends AppCompatActivity {
         receiverName = getIntent().getStringExtra("name");
         tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
-        // LOGIKA ROOM ID KHUSUS GLOBAL
         if ("GLOBAL".equals(receiverId)) {
             roomId = "GLOBAL";
         } else if (senderId != null && receiverId != null) {
@@ -83,6 +82,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         messageData.put("receiverId", receiverId);
         messageData.put("text", text);
         messageData.put("timestamp", timestamp);
+        messageData.put("status", "sent"); // Centang 1
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
             .addOnSuccessListener(aVoid -> etMessage.setText(""))
@@ -98,6 +98,11 @@ public class ChatRoomActivity extends AppCompatActivity {
                     MessageModel msg = data.getValue(MessageModel.class);
                     if (msg != null) {
                         messageList.add(msg);
+                        
+                        // Tandai "read" (Centang Biru) kalau pesan dari orang lain
+                        if (!msg.getSenderId().equals(senderId)) {
+                            data.getRef().child("status").setValue("read");
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();
