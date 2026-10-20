@@ -4,14 +4,18 @@
     android:layout_height="72dp"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground">
 
-    <!-- Avatar (Buat sementara pakai warna bulat) -->
-    <View
+    <!-- Avatar Bulat -->
+    <ImageView
         android:id="@+id/avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/nb_button_bg" /> <!-- Sementara pakai background kotak lo -->
+        android:background="@drawable/bg_avatar_circle"
+        android:padding="10dp"
+        android:src="@drawable/ic_wa_profile"
+        app:tint="#666666" />
 
     <LinearLayout
         android:layout_width="0dp"
