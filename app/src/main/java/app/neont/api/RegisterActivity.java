@@ -76,14 +76,14 @@ public class RegisterActivity extends AppCompatActivity {
         
         // Generate Kode Unik NEO-XXXX
         Random random = new Random();
-        int num = 1000 + random.nextInt(9000); // Angka 1000-9999
+        int num = 1000 + random.nextInt(9000);
         String uniqueCode = "NEO-" + num;
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
         userMap.put("name", name);
         userMap.put("status", "online");
-        userMap.put("code", uniqueCode); // Simpan kode
+        userMap.put("code", uniqueCode);
 
         mDatabase.child("users").child(uid).setValue(userMap);
     }

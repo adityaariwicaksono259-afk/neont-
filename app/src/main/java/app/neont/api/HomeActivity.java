@@ -47,17 +47,11 @@ public class HomeActivity extends AppCompatActivity {
         });
         rvChats.setAdapter(adapter);
 
-        // FIX FC: Bungkus pakai try-catch biar error muncul di Dialog
         fabNewChat.setOnClickListener(v -> {
             try {
-                Intent intent = new Intent(HomeActivity.this, NewChatActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(HomeActivity.this, NewChatActivity.class));
             } catch (Exception e) {
-                new AlertDialog.Builder(HomeActivity.this)
-                    .setTitle("Error Tombol (+)")
-                    .setMessage(e.toString())
-                    .setPositiveButton("OK", null)
-                    .show();
+                new AlertDialog.Builder(HomeActivity.this).setMessage(e.toString()).show();
             }
         });
 
