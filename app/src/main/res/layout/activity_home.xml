@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/nb_bg">
 
-    <!-- Toolbar dengan border tebal -->
+    <!-- Toolbar Atas -->
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- List Chat (nanti diisi) -->
+    <!-- List Chat -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChats"
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/bottomNav" />
 
-    <!-- FAB dengan gaya Neobrutalism -->
+    <!-- FAB (+) dengan Shadow -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNewChat"
         android:layout_width="wrap_content"
@@ -57,23 +57,23 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <!-- Pakai selectableItemBackground biar ada animasi pas di-tap -->
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/nb_black"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/nb_black"/>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="#666666"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pembaruan" android:textSize="12sp" android:textColor="#666666"/>
         </LinearLayout>
 
-        <!-- Ikon Peti buat Neonty -->
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_neonty_box" app:tint="#666666"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Neonty" android:textSize="12sp" android:textColor="#666666"/>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="#666666"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Panggilan" android:textSize="12sp" android:textColor="#666666"/>
         </LinearLayout>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@color/nb_bg"
     android:padding="24dp">
 
     <TextView
@@ -12,33 +12,40 @@
         android:text="Tambah Kontak Baru"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="@color/nb_black"
         android:layout_marginBottom="24dp"/>
 
+    <!-- Kotak Input dengan Shadow -->
     <EditText
         android:id="@+id/etContactCode"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/nb_edittext_bg"
+        android:layout_height="55dp"
+        android:background="@drawable/nb_box_white"
         android:hint="Masukkan Kode (misal: NEO-6190)"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:importantForAutofill="no"/>
 
     <EditText
         android:id="@+id/etContactName"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/nb_edittext_bg"
+        android:layout_height="55dp"
+        android:background="@drawable/nb_box_white"
         android:hint="Simpan dengan nama..."
-        android:padding="12dp"
-        android:layout_marginBottom="24dp"/>
+        android:padding="16dp"
+        android:layout_marginBottom="24dp"
+        android:importantForAutofill="no"/>
 
+    <!-- Tombol dengan animasi klik (foreground ripple) -->
     <Button
         android:id="@+id/btnSaveContact"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:background="@drawable/nb_button_bg"
         android:text="SIMPAN KONTAK"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"/>
+        android:textColor="@color/nb_white"
+        android:textStyle="bold"
+        android:foreground="?attr/selectableItemBackground"
+        android:stateListAnimator="@null"/>
 
 </LinearLayout>
