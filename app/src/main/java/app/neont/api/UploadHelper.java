@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import com.iceteck.silicompressor.SiliCompressor;
+import com.iceteck.silicompressorr.SiliCompressor;
 import org.json.JSONObject;
 
 public class UploadHelper {
