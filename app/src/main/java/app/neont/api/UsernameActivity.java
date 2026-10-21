@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,6 +14,8 @@ import java.util.Map;
 
 public class UsernameActivity extends AppCompatActivity {
     private EditText etUsername;
+    private Button btnSave;
+    private ProgressBar spinner;
     private FirebaseAuth mAuth;
 
     @Override
@@ -21,7 +24,10 @@ public class UsernameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_username);
         mAuth = FirebaseAuth.getInstance();
         etUsername = findViewById(R.id.etUsername);
-        Button btnSave = findViewById(R.id.btnSaveUsername);
+        btnSave = findViewById(R.id.btnSaveUsername);
+        spinner = findViewById(R.id.spinner);
+
+        ButtonHelper.setup(btnSave, spinner, etUsername);
 
         btnSave.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
@@ -29,6 +35,9 @@ public class UsernameActivity extends AppCompatActivity {
                 Toast.makeText(this, "Username wajib diisi!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            ButtonHelper.showSpinner(btnSave, spinner);
+
             Map<String, Object> update = new HashMap<>();
             update.put("username", username);
             FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getUid()).updateChildren(update)
@@ -36,7 +45,10 @@ public class UsernameActivity extends AppCompatActivity {
                     startActivity(new Intent(this, HomeActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    ButtonHelper.hideSpinner(btnSave, spinner);
+                    Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
         });
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import java.util.Map;
 
 public class PinActivity extends AppCompatActivity {
     private EditText etPin;
+    private Button btnSave;
+    private ProgressBar spinner;
     private FirebaseAuth mAuth;
 
     @Override
@@ -22,8 +25,11 @@ public class PinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pin);
         mAuth = FirebaseAuth.getInstance();
         etPin = findViewById(R.id.etPin);
-        Button btnSave = findViewById(R.id.btnSavePin);
+        btnSave = findViewById(R.id.btnSavePin);
+        spinner = findViewById(R.id.spinner);
         TextView tvKetentuan = findViewById(R.id.tvKetentuan);
+
+        ButtonHelper.setup(btnSave, spinner, etPin);
 
         tvKetentuan.setOnClickListener(v -> startActivity(new Intent(this, TermsActivity.class)));
 
@@ -33,6 +39,9 @@ public class PinActivity extends AppCompatActivity {
                 Toast.makeText(this, "PIN minimal 6 digit!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            ButtonHelper.showSpinner(btnSave, spinner);
+
             Map<String, Object> update = new HashMap<>();
             update.put("pin", pin);
             FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getUid()).updateChildren(update)
@@ -40,7 +49,10 @@ public class PinActivity extends AppCompatActivity {
                     startActivity(new Intent(this, UsernameActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Gagal simpan: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    ButtonHelper.hideSpinner(btnSave, spinner);
+                    Toast.makeText(this, "Gagal simpan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
         });
     }
 }
