@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Neont</string>
+    <string name="default_web_client_id">249616349259-bi5a2hlrklj51unr4gd934vckv2qcub1.apps.googleusercontent.com</string>
 </resources>
