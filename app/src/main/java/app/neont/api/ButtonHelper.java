@@ -10,9 +10,7 @@ import android.widget.ProgressBar;
 
 public class ButtonHelper {
 
-    // Pasang logika dinamis (abu-abu -> biru) & spinner
     public static void setup(Button button, ProgressBar spinner, EditText... inputs) {
-        // Default: abu-abu, disabled
         button.setEnabled(false);
         button.setBackgroundResource(R.drawable.bg_button_disabled);
 
@@ -37,15 +35,18 @@ public class ButtonHelper {
         }
     }
 
-    // Tampilkan spinner (sembunyiin tombol)
+    // Ganti teks tombol jadi "MEMUAT..." (BUKAN spinner di tengah)
     public static void showSpinner(Button button, ProgressBar spinner) {
-        button.setVisibility(View.GONE);
-        spinner.setVisibility(View.VISIBLE);
+        button.setEnabled(false);
+        button.setText("MEMUAT...");
+        // Sembunyiin spinner (kita nggak pake spinner di tengah lagi)
+        if (spinner != null) spinner.setVisibility(View.GONE);
     }
 
-    // Sembunyiin spinner (munculin tombol lagi)
-    public static void hideSpinner(Button button, ProgressBar spinner) {
-        spinner.setVisibility(View.GONE);
-        button.setVisibility(View.VISIBLE);
+    // Balikin teks tombol
+    public static void hideSpinner(Button button, ProgressBar spinner, String originalText) {
+        button.setEnabled(true);
+        button.setText(originalText);
+        if (spinner != null) spinner.setVisibility(View.GONE);
     }
 }
