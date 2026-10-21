@@ -90,7 +90,7 @@
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_emoticons" app:tint="@color/text_gray" android:layout_marginEnd="8dp"/>
+        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_send" app:tint="@color/text_gray" android:layout_marginEnd="8dp"/>
         <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_gallery" app:tint="@color/text_gray" android:layout_marginEnd="8dp"/>
 
         <EditText

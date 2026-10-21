@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_dark">#0F172A</color> <!-- Biru Gelap -->
-    <color name="bg_glass">#33FFFFFF</color> <!-- Transparan Putih -->
-    <color name="blue_accent">#3B82F6</color> <!-- Biru Terang -->
+    <!-- Warna Lama (Buat Layout yang Belum Diubah) -->
+    <color name="nb_bg">#0F172A</color>
+    <color name="nb_white">#1E293B</color>
+    <color name="nb_black">#FFFFFF</color>
+    <color name="nb_red">#3B82F6</color>
+    <color name="nb_yellow">#3B82F6</color>
+    <color name="nb_gray">#94A3B8</color>
+
+    <!-- Warna Baru Glass (Buat Layout Baru) -->
+    <color name="bg_dark">#0F172A</color>
+    <color name="bg_glass">#33FFFFFF</color>
+    <color name="blue_accent">#3B82F6</color>
     <color name="text_white">#FFFFFF</color>
     <color name="text_gray">#94A3B8</color>
 </resources>
