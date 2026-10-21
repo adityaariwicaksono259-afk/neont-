@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="32dp" android:gravity="center"
+    android:background="@color/tg_bg">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Buat Username" android:textSize="28sp" android:textStyle="bold"
+        android:textColor="@color/tg_text" android:layout_marginBottom="16dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Username wajib diisi, tidak bisa dilewati." android:textColor="@color/tg_text_gray"
+        android:layout_marginBottom="24dp" android:textAlignment="center"/>
+
+    <EditText android:id="@+id/etUsername" android:layout_width="match_parent" android:layout_height="50dp"
+        android:hint="Username (tanpa @)" android:inputType="text" android:maxLength="25"
+        android:background="@drawable/bg_search_telegram" android:padding="12dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/btnSaveUsername" android:layout_width="match_parent" android:layout_height="50dp"
+        android:text="SIMPAN & LANJUT" android:backgroundTint="@color/tg_blue" android:textColor="#FFFFFF"/>
+</LinearLayout>

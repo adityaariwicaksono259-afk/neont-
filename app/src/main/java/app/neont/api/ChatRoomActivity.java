@@ -53,9 +53,12 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (senderId != null && receiverId != null) {
             if (senderId.compareTo(receiverId) < 0) roomId = senderId + "_" + receiverId;
             else roomId = receiverId + "_" + senderId;
-        } else {
-            finish(); return;
-        }
+        } else { finish(); return; }
+
+        // Klik Header buka Profil
+        findViewById(R.id.headerChat).setOnClickListener(v -> {
+            startActivity(new android.content.Intent(this, UserProfileActivity.class).putExtra("uid", receiverId));
+        });
 
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(messageList);
@@ -67,11 +70,11 @@ public class ChatRoomActivity extends AppCompatActivity {
             if (!msg.isEmpty()) kirimPesan(msg);
         });
 
+        // Typing Indicator
         etMessage.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) mDb.child("typing").child(roomId).child(senderId).setValue(true);
-                else mDb.child("typing").child(roomId).child(senderId).setValue(false);
+                mDb.child("typing").child(roomId).child(senderId).setValue(s.length() > 0);
             }
             @Override public void afterTextChanged(android.text.Editable s) {}
         });
@@ -81,16 +84,18 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     private void kirimPesan(String text) {
+        // SANITASI: Batasi 4000 karakter & buang karakter kontrol
+        String cleanText = text.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "").substring(0, Math.min(text.length(), 4000));
+
         Map<String, Object> messageData = new HashMap<>();
         messageData.put("senderId", senderId);
         messageData.put("receiverId", receiverId);
-        messageData.put("text", text);
+        messageData.put("text", cleanText);
         messageData.put("timestamp", System.currentTimeMillis());
         messageData.put("status", "sent");
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
-            .addOnSuccessListener(aVoid -> etMessage.setText(""))
-            .addOnFailureListener(e -> Toast.makeText(this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            .addOnSuccessListener(aVoid -> etMessage.setText(""));
     }
 
     private void loadPesan() {
