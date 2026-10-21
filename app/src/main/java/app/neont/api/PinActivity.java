@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,9 @@ public class PinActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         etPin = findViewById(R.id.etPin);
         Button btnSave = findViewById(R.id.btnSavePin);
+        TextView tvKetentuan = findViewById(R.id.tvKetentuan);
+
+        tvKetentuan.setOnClickListener(v -> startActivity(new Intent(this, TermsActivity.class)));
 
         btnSave.setOnClickListener(v -> {
             String pin = etPin.getText().toString().trim();
@@ -29,7 +33,6 @@ public class PinActivity extends AppCompatActivity {
                 Toast.makeText(this, "PIN minimal 6 digit!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Simpan PIN ke Firebase (bisa di-hash nanti)
             Map<String, Object> update = new HashMap<>();
             update.put("pin", pin);
             FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getUid()).updateChildren(update)

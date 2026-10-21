@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/tg_bg" android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Ketentuan dan Keamanan" android:textSize="24sp" android:textStyle="bold"
+            android:textColor="@color/tg_text" android:layout_marginBottom="16dp"/>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Selamat datang di NEONT. Sebelum menggunakan aplikasi ini, harap baca dengan saksama ketentuan dan kebijakan keamanan berikut ini.\n\n1. Keamanan PIN: PIN yang Anda buat bersifat pribadi dan rahasia. Jangan pernah membagikan PIN kepada siapapun, termasuk pihak yang mengaku sebagai admin NEONT. NEONT tidak pernah meminta PIN Anda melalui chat, email, atau telepon.\n\n2. Tanggung Jawab Pengguna: Segala bentuk kelalaian dalam menjaga kerahasiaan PIN menjadi tanggung jawab penuh pengguna. Jika terjadi kebocoran PIN akibat kelalaian pengguna (misalnya menyimpan PIN di tempat yang tidak aman, membagikannya, atau menggunakan PIN yang mudah ditebak), maka NEONT tidak bertanggung jawab atas kerugian yang timbul.\n\n3. Lupa PIN: Jika Anda lupa PIN, proses pemulihan akun akan memerlukan verifikasi tambahan. NEONT tidak menjamin pemulihan akun jika data verifikasi tidak dapat dipenuhi. Harap simpan PIN di tempat yang aman dan ingat baik-baik.\n\n4. Keamanan Perangkat: Anda bertanggung jawab atas keamanan perangkat yang digunakan. NEONT menyarankan untuk mengaktifkan kunci layar, sidik jari, atau wajah pada perangkat Anda. Jangan menggunakan perangkat yang telah di-root atau dimodifikasi, karena dapat membahayakan keamanan data Anda.\n\n5. Data Pribadi: NEONT berkomitmen melindungi data pribadi Anda. Namun, NEONT tidak bertanggung jawab atas kebocoran data yang disebabkan oleh serangan siber, force majeure, atau kelalaian pengguna dalam menjaga kerahasiaan akun.\n\n6. Aktivitas Akun: Segala aktivitas yang terjadi di akun Anda menjadi tanggung jawab pengguna. Jika Anda mencurigai adanya akses tidak sah, segera ganti PIN dan hubungi tim dukungan NEONT.\n\n7. Perubahan Ketentuan: NEONT berhak mengubah ketentuan ini sewaktu-waktu. Perubahan akan diberitahukan melalui aplikasi atau email terdaftar.\n\n8. Pihak Ketiga: NEONT tidak bertanggung jawab atas konten atau tindakan pihak ketiga yang mungkin Anda temui melalui aplikasi ini.\n\n9. Penghentian Layanan: NEONT berhak menghentikan layanan jika terjadi pelanggaran ketentuan atau penyalahgunaan aplikasi.\n\n10. Hukum yang Berlaku: Ketentuan ini tunduk pada hukum yang berlaku di Republik Indonesia.\n\nDengan menekan tombol 'SIMPAN PIN', Anda menyatakan telah membaca, memahami, dan menyetujui seluruh ketentuan di atas. Jika Anda tidak setuju, harap jangan melanjutkan penggunaan aplikasi.\n\nTerima kasih telah menggunakan NEONT. Jaga keamanan data Anda, dan gunakan aplikasi ini dengan bijak."
+            android:textColor="@color/tg_text" android:textSize="14sp" android:lineSpacingExtra="4dp"/>
+    </LinearLayout>
+</ScrollView>

@@ -33,6 +33,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         btnLogin.setOnClickListener(v -> login());
+        findViewById(R.id.btnRegister).setOnClickListener(v -> register());
+    }
+
+    private void register() {
+        String email = etEmail.getText().toString().trim();
+        String pass = etPassword.getText().toString().trim();
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
+            Toast.makeText(this, "Isi email & password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mAuth.createUserWithEmailAndPassword(email, pass)
+            .addOnSuccessListener(a -> cekUserLama())
+            .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void login() {
