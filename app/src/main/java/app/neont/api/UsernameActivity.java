@@ -46,7 +46,7 @@ public class UsernameActivity extends AppCompatActivity {
                     finish();
                 })
                 .addOnFailureListener(e -> {
-                    ButtonHelper.hideSpinner(btnSave, spinner);
+                    ButtonHelper.hideSpinner(btnSave, spinner, "SIMPAN");
                     Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
         });

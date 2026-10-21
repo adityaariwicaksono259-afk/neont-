@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private RecyclerView rvChats;
@@ -23,6 +28,7 @@ public class HomeActivity extends AppCompatActivity {
     private List<UserModel> userList, allUsers;
     private DatabaseReference mDb;
     private String myUid;
+    private TextView tvBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
 
         rvChats = findViewById(R.id.rvChats);
         EditText etSearch = findViewById(R.id.etSearchHome);
+        tvBadge = findViewById(R.id.tvBadge);
         mDb = FirebaseDatabase.getInstance().getReference();
         myUid = FirebaseAuth.getInstance().getUid();
 
@@ -46,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setAdapter(adapter);
 
         loadChats();
+        loadUnreadCount();
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -57,7 +65,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadChats() {
-        // Baca semua user, biar bisa chat (sementara)
         mDb.child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -72,6 +79,33 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
+            }
+            @Override public void onCancelled(DatabaseError error) {}
+        });
+    }
+
+    // LOGIKA TELEGRAM: Unread Count (Badge)
+    private void loadUnreadCount() {
+        // Baca semua chat, hitung yang status != read
+        mDb.child("chats").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                int unread = 0;
+                for (DataSnapshot room : snapshot.getChildren()) {
+                    for (DataSnapshot msg : room.getChildren()) {
+                        String receiver = msg.child("receiverId").getValue(String.class);
+                        String status = msg.child("status").getValue(String.class);
+                        if (myUid != null && myUid.equals(receiver) && !"read".equals(status)) {
+                            unread++;
+                        }
+                    }
+                }
+                if (unread > 0) {
+                    tvBadge.setVisibility(View.VISIBLE);
+                    tvBadge.setText(unread > 99 ? "99+" : String.valueOf(unread));
+                } else {
+                    tvBadge.setVisibility(View.GONE);
+                }
             }
             @Override public void onCancelled(DatabaseError error) {}
         });
