@@ -14,7 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
-    private Button btnLogin;
     private FirebaseAuth mAuth;
 
     @Override
@@ -25,15 +24,28 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.btnLogin);
+        Button btnLogin = findViewById(R.id.btnLogin);
+        Button btnRegister = findViewById(R.id.btnRegister);
 
         if (mAuth.getCurrentUser() != null) {
-            cekUsernameAtauKeHome();
+            cekUserLama();
             return;
         }
 
         btnLogin.setOnClickListener(v -> login());
-        findViewById(R.id.btnRegister).setOnClickListener(v -> register());
+        btnRegister.setOnClickListener(v -> register());
+    }
+
+    private void login() {
+        String email = etEmail.getText().toString().trim();
+        String pass = etPassword.getText().toString().trim();
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
+            Toast.makeText(this, "Isi email & password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mAuth.signInWithEmailAndPassword(email, pass)
+            .addOnSuccessListener(a -> cekUserLama())
+            .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void register() {
@@ -48,45 +60,33 @@ public class MainActivity extends AppCompatActivity {
             .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void login() {
-        String email = etEmail.getText().toString().trim();
-        String pass = etPassword.getText().toString().trim();
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
-            Toast.makeText(this, "Isi email & password", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void cekUserLama() {
+        String uid = mAuth.getUid();
+        if (uid == null) return;
 
-        mAuth.signInWithEmailAndPassword(email, pass)
-            .addOnSuccessListener(a -> {
+        FirebaseDatabase.getInstance().getReference().child("users").child(uid).get()
+            .addOnSuccessListener(snapshot -> {
+                boolean hasUsername = snapshot.hasChild("username") && snapshot.child("username").getValue(String.class) != null;
+                boolean hasPin = snapshot.hasChild("pin") && snapshot.child("pin").getValue(String.class) != null;
+
                 SharedPreferences prefs = getSharedPreferences("neont_device", Context.MODE_PRIVATE);
                 String savedUid = prefs.getString("uid", null);
+                boolean isDeviceLama = (savedUid != null && savedUid.equals(uid));
 
-                if (savedUid != null && savedUid.equals(mAuth.getUid())) {
-                    // Device lama, langsung ke Home
-                    cekUsernameAtauKeHome();
+                if (hasUsername && hasPin && isDeviceLama) {
+                    startActivity(new Intent(this, HomeActivity.class));
+                    finish();
+                } else if (!hasPin) {
+                    startActivity(new Intent(this, PinActivity.class));
+                    finish();
+                } else if (!hasUsername) {
+                    startActivity(new Intent(this, UsernameActivity.class));
+                    finish();
                 } else {
-                    // Device baru, wajib PIN
                     startActivity(new Intent(this, PinActivity.class));
                     finish();
                 }
             })
-            .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void cekUsernameAtauKeHome() {
-        FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getUid())
-            .child("username").get().addOnSuccessListener(snap -> {
-                if (snap.exists() && snap.getValue(String.class) != null) {
-                    // Simpan device ID & ke Home
-                    SharedPreferences prefs = getSharedPreferences("neont_device", Context.MODE_PRIVATE);
-                    prefs.edit().putString("uid", mAuth.getUid()).apply();
-                    startActivity(new Intent(this, HomeActivity.class));
-                    finish();
-                } else {
-                    // Belum punya username, wajib isi
-                    startActivity(new Intent(this, UsernameActivity.class));
-                    finish();
-                }
-            });
+            .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
