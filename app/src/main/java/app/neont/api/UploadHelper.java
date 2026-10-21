@@ -1,16 +1,19 @@
 package app.neont.api;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.widget.Toast;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import com.iceteck.silicompressorr.SiliCompressor;
 import org.json.JSONObject;
 
 public class UploadHelper {
@@ -26,16 +29,48 @@ public class UploadHelper {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                // 1. Kompres File (parameter kedua HARUS File, bukan String)
-                File cacheDir = new File(context.getCacheDir().getPath());
-                File compressedFile;
+                File fileToUpload;
+
                 if ("image".equals(type)) {
-                    compressedFile = SiliCompressor.with(context).compressVideo(fileUri, cacheDir);
+                    // KOMPRES FOTO (Tanpa Library)
+                    InputStream is = context.getContentResolver().openInputStream(fileUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    is.close();
+                    
+                    if (bitmap == null) throw new Exception("Gagal baca gambar");
+
+                    // Scale down biar ringan (max 1080px)
+                    int maxSize = 1080;
+                    int width = bitmap.getWidth();
+                    int height = bitmap.getHeight();
+                    if (width > maxSize || height > maxSize) {
+                        float ratio = Math.min((float) maxSize / width, (float) maxSize / height);
+                        width = Math.round(ratio * width);
+                        height = Math.round(ratio * height);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                    }
+
+                    File compressed = new File(context.getCacheDir(), "story_img_" + System.currentTimeMillis() + ".jpg");
+                    FileOutputStream fos = new FileOutputStream(compressed);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos);
+                    fos.close();
+                    bitmap.recycle();
+                    fileToUpload = compressed;
+
                 } else {
-                    compressedFile = SiliCompressor.with(context).compressVideo(fileUri, cacheDir);
+                    // VIDEO: Sementara KIRIM ASLI (Kompres video butuh MediaCodec kompleks, nanti kita bikin)
+                    InputStream is = context.getContentResolver().openInputStream(fileUri);
+                    File original = new File(context.getCacheDir(), "story_vid_" + System.currentTimeMillis() + ".mp4");
+                    FileOutputStream fos = new FileOutputStream(original);
+                    byte[] buffer = new byte[8192];
+                    int read;
+                    while ((read = is.read(buffer)) != -1) fos.write(buffer, 0, read);
+                    fos.close();
+                    is.close();
+                    fileToUpload = original;
                 }
 
-                // 2. Kirim ke javin-cf (multipart/form-data)
+                // 3. Kirim ke javin-cf
                 String boundary = "*****" + System.currentTimeMillis() + "*****";
                 URL url = new URL(UPLOAD_URL + "?room_id=0");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -45,39 +80,30 @@ public class UploadHelper {
 
                 OutputStream os = conn.getOutputStream();
                 os.write(("--" + boundary + "\r\n").getBytes());
-                os.write(("Content-Disposition: form-data; name=\"file\"; filename=\"" + compressedFile.getName() + "\"\r\n").getBytes());
+                os.write(("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileToUpload.getName() + "\"\r\n").getBytes());
                 os.write(("Content-Type: " + (type.equals("image") ? "image/jpeg" : "video/mp4") + "\r\n\r\n").getBytes());
 
-                FileInputStream fis = new FileInputStream(compressedFile);
-                byte[] buffer = new byte[4096];
+                java.io.FileInputStream fis = new java.io.FileInputStream(fileToUpload);
+                byte[] buf = new byte[8192];
                 int bytesRead;
-                while ((bytesRead = fis.read(buffer)) != -1) {
-                    os.write(buffer, 0, bytesRead);
-                }
+                while ((bytesRead = fis.read(buf)) != -1) os.write(buf, 0, bytesRead);
                 fis.close();
-
+                
                 os.write(("\r\n--" + boundary + "--\r\n").getBytes());
                 os.flush();
                 os.close();
 
-                // 3. Baca Response
-                InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+                // 4. Baca Response
+                InputStream is2 = conn.getInputStream();
+                java.util.Scanner s = new java.util.Scanner(is2).useDelimiter("\\A");
                 String response = s.hasNext() ? s.next() : "";
-                is.close();
+                is2.close();
 
-                // 4. Parse JSON
                 JSONObject json = new JSONObject(response);
                 if (json.has("ok") && json.getBoolean("ok")) {
-                    String mediaUrl = null;
-                    if (json.has("message")) {
-                        mediaUrl = json.getJSONObject("message").optString("media_url", null);
-                    }
-                    if (mediaUrl != null) {
-                        callback.onSuccess(mediaUrl);
-                    } else {
-                        callback.onFailure("File ID nggak ketemu di response");
-                    }
+                    String mediaUrl = json.optJSONObject("message") != null ? json.getJSONObject("message").optString("media_url", null) : null;
+                    if (mediaUrl != null) callback.onSuccess(mediaUrl);
+                    else callback.onFailure("File ID nggak ketemu");
                 } else {
                     callback.onFailure(json.optString("message", "Upload gagal"));
                 }
