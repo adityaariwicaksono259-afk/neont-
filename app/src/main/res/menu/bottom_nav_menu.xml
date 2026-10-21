@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_chat" android:title="Obrolan" android:icon="@drawable/ic_wa_chat"/>
+    <item android:id="@+id/nav_contacts" android:title="Kontak" android:icon="@drawable/ic_wa_profile"/>
+    <item android:id="@+id/nav_settings" android:title="Pengaturan" android:icon="@drawable/ic_wa_status"/>
+    <item android:id="@+id/nav_profile" android:title="Profil" android:icon="@drawable/ic_wa_call"/>
+</menu>
