@@ -23,5 +23,6 @@
         
         <activity android:name=".UserProfileActivity" android:exported="false" />
         <activity android:name=".UsernameActivity" android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
     </application>
 </manifest>
