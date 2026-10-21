@@ -6,24 +6,49 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="32dp" android:gravity="center">
 
+        <!-- Logo/Icon Telegram-style -->
+        <ImageView
+            android:layout_width="96dp" android:layout_height="96dp"
+            android:src="@drawable/ic_wa_profile"
+            android:background="@drawable/bg_avatar_circle"
+            android:padding="24dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="24dp"
+            app:tint="@color/tg_blue"
+            xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+        <!-- Judul -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="NEONT" android:textSize="48sp" android:textStyle="bold"
-            android:textColor="@color/tg_blue" android:layout_marginTop="64dp" android:layout_marginBottom="48dp"/>
+            android:text="Masuk ke NEONT" android:textSize="24sp" android:textStyle="bold"
+            android:textColor="@color/tg_text" android:layout_marginBottom="8dp"/>
 
-        <EditText android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="50dp"
-            android:hint="Email" android:inputType="textEmailAddress" android:background="@drawable/bg_search_telegram"
-            android:padding="12dp" android:layout_marginBottom="16dp"
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Silakan masukkan email &amp; password Anda"
+            android:textColor="@color/tg_text_gray" android:textSize="14sp"
+            android:layout_marginBottom="32dp" android:textAlignment="center"/>
+
+        <!-- Input Email -->
+        <EditText android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="52dp"
+            android:hint="Email" android:inputType="textEmailAddress"
+            android:background="@drawable/bg_input_telegram"
+            android:paddingStart="16dp" android:paddingEnd="16dp" android:layout_marginBottom="16dp"
             android:importantForAutofill="no" android:autofillHints="" />
 
-        <EditText android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="50dp"
-            android:hint="Password" android:inputType="textPassword" android:background="@drawable/bg_search_telegram"
-            android:padding="12dp" android:layout_marginBottom="24dp"
+        <!-- Input Password -->
+        <EditText android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="52dp"
+            android:hint="Password" android:inputType="textPassword"
+            android:background="@drawable/bg_input_telegram"
+            android:paddingStart="16dp" android:paddingEnd="16dp" android:layout_marginBottom="24dp"
             android:importantForAutofill="no" android:autofillHints="" />
 
-        <Button android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="LOGIN" android:backgroundTint="@color/tg_blue" android:textColor="#FFFFFF" android:layout_marginBottom="8dp"/>
+        <!-- Tombol Login -->
+        <Button android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="MASUK" android:background="@drawable/bg_button_telegram"
+            android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginBottom="16dp"/>
 
-        <Button android:id="@+id/btnRegister" android:layout_width="match_parent" android:layout_height="50dp"
-            android:text="REGISTER" android:backgroundTint="@color/tg_bg_gray" android:textColor="@color/tg_text"/>
+        <!-- Tombol Register (teks biasa, bukan kotak) -->
+        <TextView android:id="@+id/btnRegister" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Belum punya akun? Daftar di sini"
+            android:textColor="@color/tg_blue" android:textStyle="bold" android:padding="8dp"/>
     </LinearLayout>
 </ScrollView>
