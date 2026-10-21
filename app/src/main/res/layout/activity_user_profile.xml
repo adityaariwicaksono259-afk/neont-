@@ -1,17 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/nb_bg"
-    android:padding="24dp"
-    android:gravity="center_horizontal">
+    android:background="@color/bg_dark">
 
-    <ImageView android:id="@+id/ivUserPhoto" android:layout_width="120dp" android:layout_height="120dp" android:src="@drawable/ic_wa_profile" android:background="@drawable/bg_avatar_circle" android:padding="20dp" android:layout_marginTop="32dp"/>
-    <TextView android:id="@+id/tvUserName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nama User" android:textSize="24sp" android:textStyle="bold" android:layout_marginTop="16dp"/>
-    <TextView android:id="@+id/tvUserUsername" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@username" android:textSize="16sp" android:textColor="#34B7F1"/>
-    <TextView android:id="@+id/tvUserBio" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bio disini" android:textSize="14sp" android:layout_marginTop="8dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
 
-    <Button android:id="@+id/btnMessageUser" android:layout_width="match_parent" android:layout_height="55dp" android:background="@drawable/nb_button_bg" android:text="KIRIM PESAN" android:textColor="@color/nb_white" android:layout_marginTop="32dp"/>
-    <Button android:id="@+id/btnBlockUser" android:layout_width="match_parent" android:layout_height="55dp" android:background="@drawable/nb_button_bg" android:text="BLOKIR USER" android:textColor="@color/nb_white" android:layout_marginTop="16dp"/>
-</LinearLayout>
+        <!-- Tombol Back & Menu -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp">
+            <ImageView
+                android:id="@+id/btnBackProfile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/text_white"
+                android:layout_centerVertical="true"/>
+            <ImageView
+                android:id="@+id/btnMenuProfile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_more"
+                app:tint="@color/text_white"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <!-- Foto Profil Bulat -->
+        <ImageView
+            android:id="@+id/ivUserPhoto"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_wa_profile"
+            android:background="@drawable/bg_avatar_circle"
+            android:padding="20dp"/>
+
+        <!-- Nama & Status -->
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama User"
+            android:textColor="@color/text_white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+        <TextView
+            android:id="@+id/tvUserStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tak terlihat sangat lama"
+            android:textColor="@color/text_gray"
+            android:textSize="14sp"/>
+
+        <!-- Tombol Aksi (Obrolan, Senyapkan, Hubungi, Video) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout android:id="@+id/btnMessageUser" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_glass" android:padding="12dp" android:layout_marginEnd="8dp">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/blue_accent"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Obrolan" android:textColor="@color/text_white" android:textSize="12sp" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_glass" android:padding="12dp" android:layout_marginEnd="8dp">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_lock_silent_mode" app:tint="@color/blue_accent"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Senyapkan" android:textColor="@color/text_white" android:textSize="12sp" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_glass" android:padding="12dp" android:layout_marginEnd="8dp">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="@color/blue_accent"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hubungi" android:textColor="@color/text_white" android:textSize="12sp" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_glass" android:padding="12dp">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_camera" app:tint="@color/blue_accent"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Video" android:textColor="@color/text_white" android:textSize="12sp" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Info Username (Card Glass) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_glass"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:id="@+id/tvUserUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@username"
+                android:textColor="@color/text_white"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="@color/text_gray"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
