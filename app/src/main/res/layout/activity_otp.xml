@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:padding="32dp" android:gravity="center"
-    android:background="@color/tg_bg">
+    android:background="@color/tg_bg" android:padding="32dp">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Verifikasi OTP" android:textSize="28sp" android:textStyle="bold"
-        android:textColor="@color/tg_text" android:layout_marginBottom="16dp"/>
+    <TextView android:id="@+id/tvTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Verifikasi OTP" android:textSize="28sp" android:textStyle="bold" android:textColor="@color/tg_text"
+        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView android:id="@+id/tvOtpInfo" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Kode dikirim ke email lo" android:textColor="@color/tg_text_gray"
-        android:layout_marginBottom="24dp"/>
+    <TextView android:id="@+id/tvInfo" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Kode dikirim ke email" android:textColor="@color/tg_text_gray"
+        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/tvTitle" app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText android:id="@+id/etOtp" android:layout_width="match_parent" android:layout_height="50dp"
+    <EditText android:id="@+id/etOtp" android:layout_width="match_parent" android:layout_height="52dp"
         android:hint="Masukkan 6 digit OTP" android:inputType="number" android:maxLength="6"
-        android:background="@drawable/bg_search_telegram" android:padding="12dp"
-        android:textAlignment="center" android:textSize="18sp" android:layout_marginBottom="24dp"/>
+        android:background="@drawable/bg_input_telegram" android:padding="16dp" android:textAlignment="center"
+        android:textSize="18sp" android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@id/tvInfo" />
 
-    <Button android:id="@+id/btnVerifyOtp" android:layout_width="match_parent" android:layout_height="50dp"
-        android:text="VERIFIKASI" android:backgroundTint="@color/tg_blue" android:textColor="#FFFFFF"/>
-</LinearLayout>
+    <Button android:id="@+id/btnVerify" android:layout_width="match_parent" android:layout_height="52dp"
+        android:text="VERIFIKASI" android:background="@drawable/bg_button_telegram" android:textColor="#FFFFFF"
+        android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@id/etOtp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
