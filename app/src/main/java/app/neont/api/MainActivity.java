@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,14 +28,12 @@ public class MainActivity extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.btnLogin);
         TextView btnRegister = findViewById(R.id.btnRegister);
 
-        if (mAuth.getCurrentUser() != null) {
-            cekUserLama();
-            return;
-        }
-
         btnLogin.setOnClickListener(v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.btn_click));
-            login();
+            try {
+                login();
+            } catch (Exception e) {
+                Toast.makeText(this, "ERROR LOGIN: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
 
         btnRegister.setOnClickListener(v -> {
@@ -52,43 +49,50 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         mAuth.signInWithEmailAndPassword(email, pass)
-            .addOnSuccessListener(a -> cekUserLama())
-            .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            .addOnSuccessListener(a -> {
+                try {
+                    cekUserLama();
+                } catch (Exception e) {
+                    Toast.makeText(this, "ERROR CEK USER: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            })
+            .addOnFailureListener(e -> Toast.makeText(this, "Gagal Login: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     private void cekUserLama() {
         String uid = mAuth.getUid();
         if (uid == null) {
-            Toast.makeText(this, "UID kosong, login ulang", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "UID kosong", Toast.LENGTH_SHORT).show();
             return;
         }
 
         FirebaseDatabase.getInstance().getReference().child("users").child(uid).get()
             .addOnSuccessListener(snapshot -> {
-                boolean hasUsername = snapshot.hasChild("username") && snapshot.child("username").getValue(String.class) != null;
-                boolean hasPin = snapshot.hasChild("pin") && snapshot.child("pin").getValue(String.class) != null;
+                try {
+                    boolean hasUsername = snapshot.hasChild("username") && snapshot.child("username").getValue(String.class) != null;
+                    boolean hasPin = snapshot.hasChild("pin") && snapshot.child("pin").getValue(String.class) != null;
 
-                SharedPreferences prefs = getSharedPreferences("neont_device", Context.MODE_PRIVATE);
-                String savedUid = prefs.getString("uid", null);
-                boolean isDeviceLama = (savedUid != null && savedUid.equals(uid));
+                    SharedPreferences prefs = getSharedPreferences("neont_device", Context.MODE_PRIVATE);
+                    String savedUid = prefs.getString("uid", null);
+                    boolean isDeviceLama = (savedUid != null && savedUid.equals(uid));
 
-                if (hasUsername && hasPin && isDeviceLama) {
-                    startActivity(new Intent(this, HomeActivity.class));
-                    finish();
-                } else if (!hasPin) {
-                    startActivity(new Intent(this, PinActivity.class));
-                    finish();
-                } else if (!hasUsername) {
-                    startActivity(new Intent(this, UsernameActivity.class));
-                    finish();
-                } else {
-                    startActivity(new Intent(this, PinActivity.class));
-                    finish();
+                    if (hasUsername && hasPin && isDeviceLama) {
+                        startActivity(new Intent(this, HomeActivity.class));
+                        finish();
+                    } else if (!hasPin) {
+                        startActivity(new Intent(this, PinActivity.class));
+                        finish();
+                    } else if (!hasUsername) {
+                        startActivity(new Intent(this, UsernameActivity.class));
+                        finish();
+                    } else {
+                        startActivity(new Intent(this, PinActivity.class));
+                        finish();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(this, "ERROR PINDAH HALAMAN: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             })
-            .addOnFailureListener(e -> {
-                Toast.makeText(this, "Error DB: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            });
+            .addOnFailureListener(e -> Toast.makeText(this, "ERROR DB: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
-
 }
