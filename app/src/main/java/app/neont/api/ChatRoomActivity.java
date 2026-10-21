@@ -1,15 +1,14 @@
 package app.neont.api;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,15 +23,14 @@ import java.util.Map;
 public class ChatRoomActivity extends AppCompatActivity {
 
     private RecyclerView rvMessages;
-    private EditText etMessage;
-    private Button btnSend;
+    private TextInputEditText etMessage;
+    private ImageView btnSend;
     private DatabaseReference mDb;
     private String senderId, receiverId, receiverName, roomId;
     private List<MessageModel> messageList;
     private MessageAdapter adapter;
-    private ValueEventListener messageListener;
-    private ValueEventListener typingListener;
-    private TextView tvChatName;
+    private ValueEventListener messageListener, typingListener;
+    private TextView tvChatName, tvChatStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);
         tvChatName = findViewById(R.id.tvChatName);
+        tvChatStatus = findViewById(R.id.tvChatStatus);
 
         mDb = FirebaseDatabase.getInstance().getReference();
         senderId = FirebaseAuth.getInstance().getUid();
@@ -58,30 +57,50 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
 
         messageList = new ArrayList<>();
-        adapter = new MessageAdapter(messageList);
+        
+        // Setup Adapter dengan Long Press Listener
+        adapter = new MessageAdapter(messageList, message -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Pesan: " + message.getText());
+            builder.setItems(new CharSequence[]{"Balas (Reply)", "Hapus", "Salin (Copy)"}, (dialog, which) -> {
+                if (which == 0) {
+                    etMessage.setText(""); // Nanti kita isi dengan quote
+                    etMessage.setHint("Membalas: " + message.getText());
+                } else if (which == 1) {
+                    mDb.child("chats").child(roomId).child(message.getMessageId()).removeValue();
+                } else if (which == 2) {
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("Pesan", message.getText());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(this, "Disalin!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.show();
+        });
+        
         rvMessages.setLayoutManager(new LinearLayoutManager(this));
         rvMessages.setAdapter(adapter);
         
         btnSend.setOnClickListener(v -> {
             String msg = etMessage.getText().toString().trim();
-            if (!msg.isEmpty()) kirimPesan(msg);
+            if (!msg.isEmpty()) {
+                kirimPesan(msg);
+            }
         });
 
-        // LOGIKA TYPING: Set true pas ngetik, false pas berhenti
-        etMessage.addTextChangedListener(new TextWatcher() {
+        // Typing Indicator
+        etMessage.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    mDb.child("typing").child(roomId).child(senderId).setValue(true);
-                } else {
-                    mDb.child("typing").child(roomId).child(senderId).setValue(false);
-                }
+                if (s.length() > 0) mDb.child("typing").child(roomId).child(senderId).setValue(true);
+                else mDb.child("typing").child(roomId).child(senderId).setValue(false);
             }
-            @Override public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(android.text.Editable s) {}
         });
         
         loadPesan();
         listenTyping();
+        listenOnlineStatus();
     }
 
     private void kirimPesan(String text) {
@@ -93,7 +112,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         messageData.put("status", "sent");
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
-            .addOnSuccessListener(aVoid -> etMessage.setText(""));
+            .addOnSuccessListener(aVoid -> {
+                etMessage.setText("");
+                etMessage.setHint("Pesan");
+            });
     }
 
     private void loadPesan() {
@@ -129,16 +151,30 @@ public class ChatRoomActivity extends AppCompatActivity {
                 for (DataSnapshot data : snapshot.getChildren()) {
                     String uid = data.getKey();
                     Boolean typing = data.getValue(Boolean.class);
-                    if (uid != null && !uid.equals(senderId) && typing != null && typing) {
-                        isTyping = true;
-                    }
+                    if (uid != null && !uid.equals(senderId) && typing != null && typing) isTyping = true;
                 }
-                if (isTyping) tvChatName.setText(receiverName + " (sedang mengetik...)");
-                else tvChatName.setText(receiverName);
+                if (isTyping) tvChatStatus.setText("sedang mengetik...");
+                else tvChatStatus.setText("Online"); // Sementara
             }
             @Override public void onCancelled(DatabaseError error) {}
         };
         mDb.child("typing").child(roomId).addValueEventListener(typingListener);
+    }
+
+    private void listenOnlineStatus() {
+        // Logika Online Status sementara
+        if (receiverId != null && !"GLOBAL".equals(receiverId)) {
+            mDb.child("users").child(receiverId).child("status").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    String status = snapshot.getValue(String.class);
+                    if (status != null) tvChatStatus.setText(status.equals("online") ? "Online" : "Terakhir dilihat baru-baru ini");
+                }
+                @Override public void onCancelled(DatabaseError error) {}
+            });
+        } else {
+            tvChatStatus.setText("Publik");
+        }
     }
 
     @Override

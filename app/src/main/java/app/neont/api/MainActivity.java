@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Pasang Jaring Pengaman (tanpa dialog debug)
-
         if (SecurityUtils.isRooted() || SecurityUtils.isEmulator()) {
             showBannedDialog();
             return;
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null) {
+            setOnline(true);
             startActivity(new Intent(this, HomeActivity.class));
             finish();
             return;
@@ -71,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
         tvGoToRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
+    private void setOnline(boolean online) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid != null) {
+            FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("status").setValue(online ? "online" : "offline");
+        }
+    }
+
     private void showBannedDialog() {
         new AlertDialog.Builder(this)
             .setTitle("Akses Ditolak")
@@ -90,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         
         mAuth.signInWithEmailAndPassword(email, pass)
             .addOnSuccessListener(a -> {
+                setOnline(true);
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
             })

@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
-    android:layout_height="180dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginEnd="12dp"
-    android:background="@drawable/bg_story_card"
-    android:gravity="bottom"
-    android:padding="8dp">
+    android:gravity="center"
+    android:layout_marginEnd="16dp">
 
-    <!-- Foto Profil Bulat di Atas -->
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_wa_profile"
-        android:background="@drawable/bg_avatar_circle"
-        android:padding="6dp"
-        android:layout_gravity="top|start"/>
+    <RelativeLayout
+        android:layout_width="72dp"
+        android:layout_height="72dp">
+        <ImageView
+            android:id="@+id/ivStoryAvatar"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_wa_profile"
+            android:background="@drawable/bg_story_ring"
+            android:padding="4dp"/>
+    </RelativeLayout>
 
-    <!-- Nama Story -->
     <TextView
         android:id="@+id/tvStoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Status saya"
-        android:textColor="#FFFFFF"
+        android:text="User"
         android:textSize="12sp"
-        android:textStyle="bold"/>
+        android:textColor="@color/text_white"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
 </LinearLayout>

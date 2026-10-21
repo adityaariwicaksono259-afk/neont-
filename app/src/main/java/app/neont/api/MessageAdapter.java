@@ -15,12 +15,18 @@ import java.util.Locale;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private List<MessageModel> messageList;
     private String currentUserId;
+    private OnMessageLongClickListener longClickListener;
     private static final int TYPE_SENT = 1;
     private static final int TYPE_RECEIVED = 2;
 
-    public MessageAdapter(List<MessageModel> messageList) {
+    public interface OnMessageLongClickListener {
+        void onMessageLongClick(MessageModel message);
+    }
+
+    public MessageAdapter(List<MessageModel> messageList, OnMessageLongClickListener listener) {
         this.messageList = messageList;
         this.currentUserId = FirebaseAuth.getInstance().getUid();
+        this.longClickListener = listener;
     }
 
     @Override
@@ -48,22 +54,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         if (holder.viewType == TYPE_SENT) {
             String status = message.getStatus();
-            if ("read".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF34B7F1); }
-            else if ("delivered".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF888888); }
-            else { holder.tvStatus.setText("✓"); holder.tvStatus.setTextColor(0xFF888888); }
-        } else {
-            // Tampilin nama pengirim (bisa lo ubah biar narik dari Firebase nanti)
-            if (holder.tvSenderName != null) {
-                holder.tvSenderName.setText("User"); 
-            }
+            if ("read".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF3B82F6); }
+            else if ("delivered".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF94A3B8); }
+            else { holder.tvStatus.setText("✓"); holder.tvStatus.setTextColor(0xFF94A3B8); }
         }
+
+        // Logika Long Press
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onMessageLongClick(message);
+            }
+            return true;
+        });
     }
 
     @Override
     public int getItemCount() { return messageList.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMessageText, tvMessageTime, tvStatus, tvSenderName;
+        TextView tvMessageText, tvMessageTime, tvStatus;
         int viewType;
         public ViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
@@ -72,8 +81,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             tvMessageTime = itemView.findViewById(R.id.tvMessageTime);
             if (viewType == TYPE_SENT) {
                 tvStatus = itemView.findViewById(R.id.tvStatus);
-            } else {
-                tvSenderName = itemView.findViewById(R.id.tvSenderName);
             }
         }
     }
