@@ -1,4 +1,9 @@
 // Top-level build file
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
 buildscript {
     repositories {
         google()
@@ -12,9 +17,4 @@ allprojects {
         mavenCentral()
         maven { url "https://europe-west3-maven.pkg.dev/talsec-artifact-repository/freerasp" }
     }
-}
-
-plugins {
-    id 'com.android.application' version '8.5.2' apply false
-    id 'com.google.gms.google-services' version '4.4.2' apply false
 }
