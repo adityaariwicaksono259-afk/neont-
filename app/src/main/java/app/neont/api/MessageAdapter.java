@@ -59,11 +59,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             else { holder.tvStatus.setText("✓"); holder.tvStatus.setTextColor(0xFF94A3B8); }
         }
 
-        // Logika Long Press
         holder.itemView.setOnLongClickListener(v -> {
-            if (longClickListener != null) {
-                longClickListener.onMessageLongClick(message);
-            }
+            if (longClickListener != null) longClickListener.onMessageLongClick(message);
             return true;
         });
     }
@@ -79,9 +76,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             this.viewType = viewType;
             tvMessageText = itemView.findViewById(R.id.tvMessageText);
             tvMessageTime = itemView.findViewById(R.id.tvMessageTime);
-            if (viewType == TYPE_SENT) {
-                tvStatus = itemView.findViewById(R.id.tvStatus);
-            }
+            if (viewType == TYPE_SENT) tvStatus = itemView.findViewById(R.id.tvStatus);
         }
     }
 }

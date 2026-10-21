@@ -3,72 +3,81 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/nb_bg">
+    android:background="@color/tg_bg">
 
+    <!-- Header & Search Bar -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="@color/nb_white"
-        android:elevation="4dp"
+        android:background="@color/tg_bg"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NEONT" android:textColor="@color/nb_black" android:textSize="24sp" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEONT"
+            android:textColor="@color/tg_blue"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
 
         <EditText
             android:id="@+id/etHomeSearch"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/nb_box_white"
-            android:hint="Cari @username atau nama..."
-            android:padding="12dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_search_telegram"
+            android:hint="Cari"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/tg_text"
             android:inputType="text"
             android:importantForAutofill="no"/>
     </LinearLayout>
 
+    <!-- List Chat -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChats"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@id/bottomNav" />
 
-    <!-- BOTTOM NAV: Dibikin Fixed di bawah -->
+    <!-- Bottom Nav Telegram -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@color/nb_white"
+        android:layout_height="60dp"
+        android:background="@color/tg_bg"
         android:elevation="8dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout android:id="@+id/navChat" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/nb_black"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chat" android:textSize="10sp" android:textStyle="bold" android:textColor="@color/nb_black"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/tg_blue"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Obrolan" android:textSize="10sp" android:textColor="@color/tg_blue"/>
         </LinearLayout>
 
         <LinearLayout android:id="@+id/navPembaruan" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pembaruan" android:textSize="10sp" android:textColor="#666666"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pembaruan" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
 
         <LinearLayout android:id="@+id/navNeonty" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_neonty_box" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Neonty" android:textSize="10sp" android:textColor="#666666"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_neonty_box" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Neonty" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
 
         <LinearLayout android:id="@+id/navPanggilan" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Panggilan" android:textSize="10sp" android:textColor="#666666"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Panggilan" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
 
         <LinearLayout android:id="@+id/navProfile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="#666666"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="#666666"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
