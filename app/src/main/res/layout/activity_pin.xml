@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="32dp" android:gravity="center"
+    android:background="@color/tg_bg">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Buat PIN Keamanan" android:textSize="24sp" android:textStyle="bold"
+        android:textColor="@color/tg_text" android:layout_marginBottom="8dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="PIN ini buat masuk di device baru." android:textColor="@color/tg_text_gray"
+        android:layout_marginBottom="24dp"/>
+
+    <EditText android:id="@+id/etPin" android:layout_width="match_parent" android:layout_height="50dp"
+        android:hint="Masukkan 6 digit PIN" android:inputType="number" android:maxLength="6"
+        android:background="@drawable/bg_search_telegram" android:padding="12dp"
+        android:textAlignment="center" android:textSize="18sp" android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/btnSavePin" android:layout_width="match_parent" android:layout_height="50dp"
+        android:text="SIMPAN PIN" android:backgroundTint="@color/tg_blue" android:textColor="#FFFFFF"/>
+</LinearLayout>
