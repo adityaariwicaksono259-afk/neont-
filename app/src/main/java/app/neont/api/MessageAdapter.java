@@ -15,18 +15,11 @@ import java.util.Locale;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private List<MessageModel> messageList;
     private String currentUserId;
-    private OnMessageLongClickListener longClickListener;
-    private static final int TYPE_SENT = 1;
-    private static final int TYPE_RECEIVED = 2;
+    private static final int TYPE_SENT = 1, TYPE_RECEIVED = 2;
 
-    public interface OnMessageLongClickListener {
-        void onMessageLongClick(MessageModel message);
-    }
-
-    public MessageAdapter(List<MessageModel> messageList, OnMessageLongClickListener listener) {
+    public MessageAdapter(List<MessageModel> messageList) {
         this.messageList = messageList;
         this.currentUserId = FirebaseAuth.getInstance().getUid();
-        this.longClickListener = listener;
     }
 
     @Override
@@ -54,15 +47,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         if (holder.viewType == TYPE_SENT) {
             String status = message.getStatus();
-            if ("read".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF3B82F6); }
-            else if ("delivered".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF94A3B8); }
-            else { holder.tvStatus.setText("✓"); holder.tvStatus.setTextColor(0xFF94A3B8); }
+            if ("read".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF007AFF); }
+            else if ("delivered".equals(status)) { holder.tvStatus.setText("✓✓"); holder.tvStatus.setTextColor(0xFF8E8E93); }
+            else { holder.tvStatus.setText("✓"); holder.tvStatus.setTextColor(0xFF8E8E93); }
         }
-
-        holder.itemView.setOnLongClickListener(v -> {
-            if (longClickListener != null) longClickListener.onMessageLongClick(message);
-            return true;
-        });
     }
 
     @Override

@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Warna Telegram Light Mode (Home, List Chat) -->
+    <color name="tg_blue">#007AFF</color>
     <color name="tg_bg">#FFFFFF</color>
     <color name="tg_bg_gray">#F4F4F5</color>
     <color name="tg_text">#000000</color>
     <color name="tg_text_gray">#8E8E93</color>
-    <color name="tg_blue">#007AFF</color>
     <color name="tg_bubble_sent">#E1FFC7</color>
     <color name="tg_bubble_received">#FFFFFF</color>
-
-    <!-- Warna Glass (Buat Chat Room & Pembaruan) -->
-    <color name="bg_dark">#0F172A</color>
-    <color name="bg_glass">#33FFFFFF</color>
-    <color name="blue_accent">#3B82F6</color>
-    <color name="text_white">#FFFFFF</color>
-    <color name="text_gray">#94A3B8</color>
-
-    <!-- Warna Lama (Biar Nggak Error) -->
-    <color name="nb_bg">#FFFFFF</color>
-    <color name="nb_white">#FFFFFF</color>
-    <color name="nb_black">#000000</color>
-    <color name="nb_red">#FF3B30</color>
-    <color name="nb_yellow">#FFCC00</color>
-    <color name="nb_gray">#E5E5EA</color>
+    <color name="tg_chat_bg">#DCE8D5</color> <!-- Hijau Daun Telegram -->
+    <color name="tg_online">#4CAF50</color>
 </resources>

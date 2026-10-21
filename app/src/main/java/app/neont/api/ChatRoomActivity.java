@@ -50,30 +50,15 @@ public class ChatRoomActivity extends AppCompatActivity {
         receiverName = getIntent().getStringExtra("name");
         tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
-        if ("GLOBAL".equals(receiverId)) roomId = "GLOBAL";
-        else {
+        if (senderId != null && receiverId != null) {
             if (senderId.compareTo(receiverId) < 0) roomId = senderId + "_" + receiverId;
             else roomId = receiverId + "_" + senderId;
+        } else {
+            finish(); return;
         }
 
         messageList = new ArrayList<>();
-        adapter = new MessageAdapter(messageList, message -> {
-            new AlertDialog.Builder(this)
-                .setTitle("Pesan")
-                .setItems(new CharSequence[]{"Balas (Reply)", "Salin (Copy)"}, (dialog, which) -> {
-                    if (which == 0) {
-                        etMessage.setText("");
-                        etMessage.setHint("Membalas: " + message.getText());
-                    } else {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData.newPlainText("Pesan", message.getText());
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(this, "Disalin!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .show();
-        });
-        
+        adapter = new MessageAdapter(messageList);
         rvMessages.setLayoutManager(new LinearLayoutManager(this));
         rvMessages.setAdapter(adapter);
         
@@ -82,6 +67,15 @@ public class ChatRoomActivity extends AppCompatActivity {
             if (!msg.isEmpty()) kirimPesan(msg);
         });
 
+        etMessage.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) mDb.child("typing").child(roomId).child(senderId).setValue(true);
+                else mDb.child("typing").child(roomId).child(senderId).setValue(false);
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
+        
         loadPesan();
         listenTyping();
     }
@@ -95,10 +89,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         messageData.put("status", "sent");
         
         mDb.child("chats").child(roomId).push().setValue(messageData)
-            .addOnSuccessListener(aVoid -> {
-                etMessage.setText("");
-                etMessage.setHint("Pesan");
-            });
+            .addOnSuccessListener(aVoid -> etMessage.setText(""))
+            .addOnFailureListener(e -> Toast.makeText(this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void loadPesan() {

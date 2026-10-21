@@ -1,112 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_chat_pattern">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_chat_telegram">
 
-    <!-- HEADER CHAT (Glass + Foto Profil + Status) -->
-    <LinearLayout
-        android:id="@+id/headerChat"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_glass_top"
-        android:elevation="4dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <!-- Foto Profil -->
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_wa_profile"
-            android:background="@drawable/bg_avatar_circle"
-            android:padding="8dp"
-            android:layout_marginEnd="12dp"/>
-
-        <!-- Nama & Status -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/tvChatName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nama Teman"
-                android:textColor="@color/text_white"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/tvChatStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Online"
-                android:textColor="@color/blue_accent"
-                android:textSize="12sp"/>
+    <!-- HEADER CHAT -->
+    <LinearLayout android:id="@+id/headerChat" android:layout_width="match_parent" android:layout_height="60dp"
+        android:background="@color/tg_bg" android:elevation="4dp" android:orientation="horizontal"
+        android:gravity="center_vertical" android:padding="12dp" app:layout_constraintTop_toTopOf="parent">
+        
+        <ImageView android:layout_width="40dp" android:layout_height="40dp"
+            android:src="@drawable/ic_wa_profile" android:background="@drawable/bg_avatar_circle" android:padding="8dp" android:layout_marginEnd="12dp"/>
+        
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/tvChatName" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Nama Teman" android:textColor="@color/tg_text" android:textSize="16sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/tvChatStatus" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Online" android:textColor="@color/tg_blue" android:textSize="12sp"/>
         </LinearLayout>
-
-        <!-- Tombol Call & Menu -->
-        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_call" app:tint="@color/text_white" android:layout_marginEnd="8dp"/>
-        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_more" app:tint="@color/text_white"/>
     </LinearLayout>
 
     <!-- LIST PESAN -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMessages"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="8dp"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/headerChat"
-        app:layout_constraintBottom_toTopOf="@id/bottomInput" />
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvMessages"
+        android:layout_width="match_parent" android:layout_height="0dp" android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/headerChat" app:layout_constraintBottom_toTopOf="@id/bottomInput" />
 
-    <!-- TOMBOL SCROLL KE BAWAH (Floating) -->
-    <ImageView
-        android:id="@+id/btnScrollBottom"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@android:drawable/ic_menu_send"
-        android:background="@drawable/bg_glass"
-        android:padding="8dp"
-        app:tint="@color/blue_accent"
-        android:visibility="gone"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomInput"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <!-- KOLOM KETIK -->
+    <LinearLayout android:id="@+id/bottomInput" android:layout_width="match_parent" android:layout_height="60dp"
+        android:background="@color/tg_bg" android:elevation="8dp" android:orientation="horizontal"
+        android:gravity="center_vertical" android:padding="8dp" app:layout_constraintBottom_toBottomOf="parent">
 
-    <!-- KOLOM KETIK (Glass + Ikon) -->
-    <LinearLayout
-        android:id="@+id/bottomInput"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_glass_top"
-        android:elevation="8dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        <EditText android:id="@+id/etMessage" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:hint="Pesan" android:textColorHint="@color/tg_text_gray"
+            android:textColor="@color/tg_text" android:background="@drawable/bg_search_telegram" android:padding="12dp" />
 
-        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_send" app:tint="@color/text_gray" android:layout_marginEnd="8dp"/>
-        <ImageView android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_gallery" app:tint="@color/text_gray" android:layout_marginEnd="8dp"/>
-
-        <EditText
-            android:id="@+id/etMessage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Pesan"
-            android:textColorHint="@color/text_gray"
-            android:textColor="@color/text_white"
-            android:background="@drawable/bg_glass"
-            android:padding="12dp"
-            android:maxLines="4"
-            android:inputType="textMultiLine"/>
-
-        <ImageView android:id="@+id/btnSend" android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_send" app:tint="@color/blue_accent" android:layout_marginStart="8dp"/>
+        <ImageView android:id="@+id/btnSend" android:layout_width="40dp" android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_send" app:tint="@color/tg_blue" android:layout_marginStart="8dp"/>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
