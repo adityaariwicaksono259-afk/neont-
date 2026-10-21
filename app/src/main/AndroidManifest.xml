@@ -22,10 +22,6 @@
         <activity android:name=".ChatRoomActivity" android:exported="false" />
         
         <activity android:name=".UserProfileActivity" android:exported="false" />
-        <activity android:name=".OtpActivity" android:exported="false" />
         <activity android:name=".UsernameActivity" android:exported="false" />
-        <activity android:name=".PinActivity" android:exported="false" />
-        <activity android:name=".TermsActivity" android:exported="false" />
-        <activity android:name=".RegisterActivity" android:exported="false" />
     </application>
 </manifest>
