@@ -15,7 +15,6 @@ import org.json.JSONObject;
 
 public class UploadHelper {
 
-    // GANTI PAKE URL CLOUDFLARE WORKER LO
     private static final String UPLOAD_URL = "https://jvin.pages.dev/api/chat/upload";
 
     public interface UploadCallback {
@@ -27,17 +26,18 @@ public class UploadHelper {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                // 1. Kompres File
+                // 1. Kompres File (parameter kedua HARUS File, bukan String)
+                File cacheDir = new File(context.getCacheDir().getPath());
                 File compressedFile;
                 if ("image".equals(type)) {
-                    compressedFile = SiliCompressor.with(context).compressVideo(fileUri, context.getCacheDir().getPath());
+                    compressedFile = SiliCompressor.with(context).compressVideo(fileUri, cacheDir);
                 } else {
-                    compressedFile = SiliCompressor.with(context).compressVideo(fileUri, context.getCacheDir().getPath());
+                    compressedFile = SiliCompressor.with(context).compressVideo(fileUri, cacheDir);
                 }
 
                 // 2. Kirim ke javin-cf (multipart/form-data)
                 String boundary = "*****" + System.currentTimeMillis() + "*****";
-                URL url = new URL(UPLOAD_URL + "?room_id=0"); // room_id 0 biar nggak masuk chat
+                URL url = new URL(UPLOAD_URL + "?room_id=0");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setDoOutput(true);
                 conn.setRequestMethod("POST");
@@ -47,7 +47,7 @@ public class UploadHelper {
                 os.write(("--" + boundary + "\r\n").getBytes());
                 os.write(("Content-Disposition: form-data; name=\"file\"; filename=\"" + compressedFile.getName() + "\"\r\n").getBytes());
                 os.write(("Content-Type: " + (type.equals("image") ? "image/jpeg" : "video/mp4") + "\r\n\r\n").getBytes());
-                
+
                 FileInputStream fis = new FileInputStream(compressedFile);
                 byte[] buffer = new byte[4096];
                 int bytesRead;
@@ -55,7 +55,7 @@ public class UploadHelper {
                     os.write(buffer, 0, bytesRead);
                 }
                 fis.close();
-                
+
                 os.write(("\r\n--" + boundary + "--\r\n").getBytes());
                 os.flush();
                 os.close();
@@ -66,10 +66,9 @@ public class UploadHelper {
                 String response = s.hasNext() ? s.next() : "";
                 is.close();
 
-                // 4. Parse JSON (cari field media_url atau file_id)
+                // 4. Parse JSON
                 JSONObject json = new JSONObject(response);
                 if (json.has("ok") && json.getBoolean("ok")) {
-                    // Sesuaikan sama response javin-cf lo
                     String mediaUrl = null;
                     if (json.has("message")) {
                         mediaUrl = json.getJSONObject("message").optString("media_url", null);
