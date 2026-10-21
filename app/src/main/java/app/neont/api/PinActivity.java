@@ -42,8 +42,11 @@ public class PinActivity extends AppCompatActivity {
 
             ButtonHelper.showSpinner(btnSave, spinner);
 
+            // HASH PIN SEBELUM DISIMPEN (KEAMANAN)
+            String hashedPin = HashHelper.sha256(pin);
+
             Map<String, Object> update = new HashMap<>();
-            update.put("pin", pin);
+            update.put("pin", hashedPin);
             FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getUid()).updateChildren(update)
                 .addOnSuccessListener(aVoid -> {
                     startActivity(new Intent(this, UsernameActivity.class));

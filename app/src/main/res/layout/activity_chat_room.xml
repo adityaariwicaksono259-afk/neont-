@@ -35,6 +35,6 @@
             android:textColor="@color/tg_text" android:background="@drawable/bg_search_telegram" android:padding="12dp" />
 
         <ImageView android:id="@+id/btnSend" android:layout_width="40dp" android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_send" app:tint="@color/tg_blue" android:layout_marginStart="8dp"/>
+            android:src="@drawable/ic_send_telegram" app:tint="@color/tg_blue" android:layout_marginStart="8dp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

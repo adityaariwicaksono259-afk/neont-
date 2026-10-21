@@ -1,6 +1,8 @@
 package app.neont.api;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
@@ -58,8 +61,37 @@ public class MainActivity extends AppCompatActivity {
 
             mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener(a -> {
-                    startActivity(new Intent(this, HomeActivity.class));
-                    finish();
+                    String uid = mAuth.getUid();
+                    SharedPreferences prefs = getSharedPreferences("neont_device", Context.MODE_PRIVATE);
+                    String savedUid = prefs.getString("uid", null);
+                    boolean isDeviceLama = (savedUid != null && savedUid.equals(uid));
+
+                    FirebaseDatabase.getInstance().getReference().child("users").child(uid).get()
+                        .addOnSuccessListener(snapshot -> {
+                            boolean hasPin = snapshot.hasChild("pin") && snapshot.child("pin").getValue(String.class) != null;
+                            boolean hasUsername = snapshot.hasChild("username") && snapshot.child("username").getValue(String.class) != null;
+
+                            // SIMPEN DEVICE ID (KUNCI!)
+                            prefs.edit().putString("uid", uid).apply();
+
+                            if (isDeviceLama && hasPin && hasUsername) {
+                                startActivity(new Intent(this, HomeActivity.class));
+                                finish();
+                            } else if (!hasPin) {
+                                startActivity(new Intent(this, PinActivity.class));
+                                finish();
+                            } else if (!hasUsername) {
+                                startActivity(new Intent(this, UsernameActivity.class));
+                                finish();
+                            } else {
+                                startActivity(new Intent(this, OtpActivity.class).putExtra("email", email));
+                                finish();
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            ButtonHelper.hideSpinner(btnLogin, spinner);
+                            Toast.makeText(this, "Error DB: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
                 })
                 .addOnFailureListener(e -> {
                     ButtonHelper.hideSpinner(btnLogin, spinner);

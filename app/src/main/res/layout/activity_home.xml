@@ -15,11 +15,37 @@
         <EditText android:id="@+id/etSearchHome" android:layout_width="match_parent" android:layout_height="40dp"
             android:background="@drawable/bg_search_telegram" android:hint="Cari Obrolan"
             android:paddingStart="16dp" android:paddingEnd="16dp" android:textColor="@color/tg_text"
-            android:inputType="text" android:importantForAutofill="no"/>
+            android:inputType="text" android:importantForAutofill="no" android:focusable="false"/>
     </LinearLayout>
 
     <!-- List Chat -->
     <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvChats"
         android:layout_width="match_parent" android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/headerHome" app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/headerHome" app:layout_constraintBottom_toTopOf="@id/bottomNav" />
+
+    <!-- Bottom Nav (Telegram: Obrolan, Kontak, Pengaturan, Profil) -->
+    <LinearLayout android:id="@+id/bottomNav" android:layout_width="match_parent" android:layout_height="60dp"
+        android:background="@color/tg_bg" android:elevation="8dp" android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/tg_blue"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Obrolan" android:textSize="10sp" android:textColor="@color/tg_blue"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kontak" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pengaturan" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="@color/tg_text_gray"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
