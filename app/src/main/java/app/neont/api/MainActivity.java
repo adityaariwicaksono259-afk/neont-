@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void cekUserLama() {
         String uid = mAuth.getUid();
-        if (uid == null) return;
+        if (uid == null) {
+            Toast.makeText(this, "UID kosong, login ulang", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         FirebaseDatabase.getInstance().getReference().child("users").child(uid).get()
             .addOnSuccessListener(snapshot -> {
@@ -82,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(this, PinActivity.class));
                     finish();
                 }
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Error DB: " + e.getMessage(), Toast.LENGTH_LONG).show();
             });
     }
+
 }
