@@ -45,10 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setLayoutManager(new LinearLayoutManager(this));
         rvChats.setAdapter(adapter);
 
-        loadUsers();
-
-        etSearch.clearFocus();
-        findViewById(android.R.id.content).requestFocus();
+        loadChats();
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -59,7 +56,8 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void loadUsers() {
+    private void loadChats() {
+        // Baca semua user, biar bisa chat (sementara)
         mDb.child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {

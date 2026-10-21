@@ -2,9 +2,12 @@ package app.neont.api;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +15,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
+    private Button btnLogin;
+    private ProgressBar spinner;
+    private ImageView ivTogglePass;
     private FirebaseAuth mAuth;
+    private boolean isPassVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,28 +29,42 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        Button btnLogin = findViewById(R.id.btnLogin);
+        btnLogin = findViewById(R.id.btnLogin);
+        spinner = findViewById(R.id.spinner);
+        ivTogglePass = findViewById(R.id.ivTogglePass);
         TextView tvGoToRegister = findViewById(R.id.tvGoToRegister);
 
-        if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
-            return;
-        }
+        ButtonHelper.setup(btnLogin, spinner, etEmail, etPassword);
+
+        ivTogglePass.setOnClickListener(v -> {
+            if (isPassVisible) {
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                ivTogglePass.setImageResource(R.drawable.ic_eye_open);
+                isPassVisible = false;
+            } else {
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                ivTogglePass.setImageResource(R.drawable.ic_eye_closed);
+                isPassVisible = true;
+            }
+            etPassword.setSelection(etPassword.length());
+        });
 
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String pass = etPassword.getText().toString().trim();
-            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
-                Toast.makeText(this, "Isi email & password", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) return;
+
+            ButtonHelper.showSpinner(btnLogin, spinner);
+
             mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener(a -> {
                     startActivity(new Intent(this, HomeActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    ButtonHelper.hideSpinner(btnLogin, spinner, "MASUK");
+                    Toast.makeText(this, AuthHelper.getErrorMessage(e), Toast.LENGTH_SHORT).show();
+                });
         });
 
         tvGoToRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));

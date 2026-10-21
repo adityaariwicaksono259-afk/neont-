@@ -35,23 +35,16 @@ public class ButtonHelper {
         }
     }
 
-    // Ganti teks tombol jadi "MEMUAT..." (2 parameter aja)
+    // Tampilkan "MEMUAT..." (bukan spinner di tengah)
     public static void showSpinner(Button button, ProgressBar spinner) {
         button.setEnabled(false);
         button.setText("MEMUAT...");
         if (spinner != null) spinner.setVisibility(View.GONE);
     }
 
-    // Balikin teks tombol (2 parameter aja, pake tag)
-    public static void hideSpinner(Button button, ProgressBar spinner) {
+    public static void hideSpinner(Button button, ProgressBar spinner, String originalText) {
         button.setEnabled(true);
-        // Balikin teks asli dari tag (default: "SIMPAN")
-        String originalText = (String) button.getTag();
-        if (originalText != null) {
-            button.setText(originalText);
-        } else {
-            button.setText("SIMPAN"); // Fallback
-        }
+        button.setText(originalText);
         if (spinner != null) spinner.setVisibility(View.GONE);
     }
 }
