@@ -19,7 +19,7 @@ import okhttp3.Response;
 /**
  * UploadHelper — upload file ke Filebase via javin-cf Pages Function.
  *
- * Endpoint: https://jvin.pages.dev/api/neont/upload
+ * Endpoint: https://neont-servers.pages.dev/api/upload
  * Method  : POST multipart/form-data
  * Field   : file (File), folder ("avatar" | "chat")
  * Return  : { ok: true, url: "https://s3.filebase.io/neont-media/neont/avatar/..." }
@@ -33,7 +33,7 @@ import okhttp3.Response;
  */
 public class UploadHelper {
 
-    private static final String UPLOAD_URL = "https://jvin.pages.dev/api/neont/upload";
+    private static final String UPLOAD_URL = "https://neont-servers.pages.dev/api/upload";
 
     private static final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)

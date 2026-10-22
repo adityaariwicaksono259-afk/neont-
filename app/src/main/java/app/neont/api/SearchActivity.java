@@ -2,6 +2,8 @@ package app.neont.api;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -20,6 +22,8 @@ public class SearchActivity extends AppCompatActivity {
     private ChatAdapter adapter;
     private List<UserModel> userList;
     private String myUid;
+    private Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String query = s.toString().trim();
-                cariUserDiD1(query);
+                if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
+                searchRunnable = () -> cariUserDiD1(query);
+                searchHandler.postDelayed(searchRunnable, 300); // Debounce 300ms
             }
             @Override public void afterTextChanged(Editable s) {}
         });
@@ -61,8 +67,9 @@ public class SearchActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             return;
         }
-        if (keyword.length() < 2) return;
+        if (keyword.length() < 5) return;
 
+        Toast.makeText(SearchActivity.this, "Mencari...", Toast.LENGTH_SHORT).show();
         D1Helper.searchUser(keyword, new D1Helper.SearchCallback() {
             @Override
             public void onSuccess(JSONArray users) {

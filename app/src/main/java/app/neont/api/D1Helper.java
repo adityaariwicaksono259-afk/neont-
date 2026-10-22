@@ -18,7 +18,7 @@ import okhttp3.Response;
 /**
  * D1Helper — jembatan ke Cloudflare D1 via javin-cf Pages Functions.
  *
- * Endpoint: https://jvin.pages.dev/api/neont/user
+ * Endpoint: https://neont-servers.pages.dev/api/user
  * - POST   { firebase_uid, display_name }              → create user (auto-generate user_code)
  * - GET    ?uid=<firebase_uid>  atau  ?code=<user_code> → get user
  * - PUT    { firebase_uid, username?, display_name?, bio?, photo_url? } → update
@@ -27,7 +27,8 @@ import okhttp3.Response;
  */
 public class D1Helper {
 
-    public static final String BASE_URL = "https://jvin.pages.dev";
+    public static final String BASE_URL = "https://neont-servers.pages.dev";
+    private static final String NEONT_SECRET = "neont_rahasia_123";
 
     private static final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -58,9 +59,10 @@ public class D1Helper {
             body.put("display_name", displayName == null ? "" : displayName);
 
             Request req = new Request.Builder()
-                    .url(BASE_URL + "/api/neont/user")
+                    .url(BASE_URL + "/api/user")
                     .post(RequestBody.create(body.toString(), JSON_TYPE))
                     .header("Accept", "application/json")
+                    .header("X-Neont-Secret", NEONT_SECRET)
                     .build();
 
             enqueue(req, cb);
@@ -76,9 +78,10 @@ public class D1Helper {
             return;
         }
         Request req = new Request.Builder()
-                .url(BASE_URL + "/api/neont/user?uid=" + firebaseUid)
+                .url(BASE_URL + "/api/user?uid=" + firebaseUid)
                 .get()
                 .header("Accept", "application/json")
+                    .header("X-Neont-Secret", NEONT_SECRET)
                 .build();
         enqueue(req, cb);
     }
@@ -90,9 +93,10 @@ public class D1Helper {
             return;
         }
         Request req = new Request.Builder()
-                .url(BASE_URL + "/api/neont/user?code=" + userCode)
+                .url(BASE_URL + "/api/user?code=" + userCode)
                 .get()
                 .header("Accept", "application/json")
+                    .header("X-Neont-Secret", NEONT_SECRET)
                 .build();
         enqueue(req, cb);
     }
@@ -115,9 +119,10 @@ public class D1Helper {
             fields.put("firebase_uid", firebaseUid);
 
             Request req = new Request.Builder()
-                    .url(BASE_URL + "/api/neont/user")
+                    .url(BASE_URL + "/api/user")
                     .put(RequestBody.create(fields.toString(), JSON_TYPE))
                     .header("Accept", "application/json")
+                    .header("X-Neont-Secret", NEONT_SECRET)
                     .build();
 
             enqueue(req, cb);
@@ -187,15 +192,16 @@ public class D1Helper {
     }
 
     public static void searchUser(String query, SearchCallback cb) {
-        if (query == null || query.trim().length() < 2) {
-            cb.onError("Minimal 2 karakter");
+        if (query == null || query.trim().length() < 5) {
+            cb.onError("Minimal 5 karakter");
             return;
         }
         String q = query.trim().replace("@", "");
         Request req = new Request.Builder()
-                .url(BASE_URL + "/api/neont/search?q=" + android.net.Uri.encode(q))
+                .url(BASE_URL + "/api/search?q=" + android.net.Uri.encode(q))
                 .get()
                 .header("Accept", "application/json")
+                    .header("X-Neont-Secret", NEONT_SECRET)
                 .build();
 
         client.newCall(req).enqueue(new okhttp3.Callback() {

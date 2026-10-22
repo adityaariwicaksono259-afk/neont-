@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     
     <application
+        android:name=".NeontApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Neont"
@@ -18,10 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity" android:exported="false" />
-        <activity android:name=".ChatRoomActivity" android:exported="false" />
+        <activity android:name=".HomeActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ChatRoomActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         
         <activity android:name=".UserProfileActivity" android:exported="false" />
+        <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".PrivacyActivity" android:exported="false" />
         <activity android:name=".UsernameActivity" android:exported="false" />
         <activity android:name=".RegisterActivity" android:exported="false" />
         <activity android:name=".GroupInfoActivity" android:exported="false" />

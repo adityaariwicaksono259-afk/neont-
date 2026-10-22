@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import org.json.JSONObject;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,8 +67,22 @@ public class MainActivity extends AppCompatActivity {
             AuthHelper.login(this, email, pass, new AuthHelper.AuthCallback() {
                 @Override
                 public void onSuccess(com.google.firebase.auth.FirebaseUser user) {
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                    finish();
+                    // Cek D1 apakah username sudah ada
+                    D1Helper.getUser(user.getUid(), new D1Helper.UserCallback() {
+                        @Override public void onSuccess(org.json.JSONObject u) {
+                            String username = u.optString("username", "");
+                            if (username.isEmpty() || username.equals("null")) {
+                                startActivity(new Intent(MainActivity.this, UsernameActivity.class));
+                            } else {
+                                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                            }
+                            finish();
+                        }
+                        @Override public void onError(String message) {
+                            startActivity(new Intent(MainActivity.this, UsernameActivity.class));
+                            finish();
+                        }
+                    });
                 }
 
                 @Override

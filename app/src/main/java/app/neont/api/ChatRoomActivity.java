@@ -143,7 +143,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         Map<String, Object> messageData = new HashMap<>();
         messageData.put("senderId", senderId);
         messageData.put("receiverId", receiverId);
-        messageData.put("text", text);
+        String encryptedText = CryptoHelper.encrypt(text, roomId);
+        messageData.put("text", encryptedText);
         messageData.put("timestamp", ServerValue.TIMESTAMP);
         messageData.put("status", "sent");
         if (replyToId != null) messageData.put("replyToMsgId", replyToId);
@@ -161,7 +162,8 @@ public class ChatRoomActivity extends AppCompatActivity {
                 messageList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     String sender = data.child("senderId").getValue(String.class);
-                    String text = data.child("text").getValue(String.class);
+                    String encryptedText = data.child("text").getValue(String.class);
+                    String text = (encryptedText != null) ? CryptoHelper.decrypt(encryptedText, roomId) : "";
                     Long timestamp = data.child("timestamp").getValue(Long.class);
                     String status = data.child("status").getValue(String.class);
                     String replyTo = data.child("replyToMsgId").getValue(String.class);

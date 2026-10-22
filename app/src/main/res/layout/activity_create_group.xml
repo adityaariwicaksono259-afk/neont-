@@ -1,23 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="@color/tg_bg" android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F0F2F5">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Buat Grup/Channel" android:textSize="24sp" android:textStyle="bold"
-        android:textColor="@color/tg_text" android:layout_marginBottom="24dp"/>
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:elevation="2dp">
+        <ImageView
+            android:id="@+id/btnBackCreate"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:tint="#000000"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Grup Baru"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/btnCreateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buat"
+            android:textColor="#007AFF"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+    </LinearLayout>
 
-    <EditText android:id="@+id/etTitle" android:layout_width="match_parent" android:layout_height="52dp"
-        android:hint="Nama Grup/Channel" android:background="@drawable/bg_input_telegram"
-        android:padding="16dp" android:layout_marginBottom="16dp"/>
+    <!-- Input Nama Grup -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:padding="16dp"
+        android:layout_marginTop="1dp">
+        <EditText
+            android:id="@+id/etGroupName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama Grup"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"/>
+    </LinearLayout>
 
-    <EditText android:id="@+id/etDescription" android:layout_width="match_parent" android:layout_height="100dp"
-        android:hint="Deskripsi (opsional)" android:background="@drawable/bg_input_telegram"
-        android:padding="16dp" android:gravity="top" android:layout_marginBottom="16dp"/>
+    <!-- Label Pilih Anggota -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih Anggota"
+        android:textColor="#007AFF"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:padding="16dp"/>
 
-    <CheckBox android:id="@+id/cbChannel" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Jadikan Channel (read-only)" android:textColor="@color/tg_text" android:layout_marginBottom="16dp"/>
-
-    <Button android:id="@+id/btnCreate" android:layout_width="match_parent" android:layout_height="52dp"
-        android:text="BUAT" android:background="@drawable/bg_button_telegram" android:textColor="#FFFFFF"/>
+    <!-- Daftar Kontak -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvContacts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"/>
 </LinearLayout>

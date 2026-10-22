@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
@@ -59,8 +60,25 @@ public class RegisterActivity extends AppCompatActivity {
             }
             mAuth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener(a -> {
-                    startActivity(new Intent(this, HomeActivity.class));
-                    finish();
+                    // Cek D1 apakah username sudah ada
+                    D1Helper.getUser(a.getUser().getUid(), new D1Helper.UserCallback() {
+                        @Override public void onSuccess(org.json.JSONObject user) {
+                            String username = user.optString("username", "");
+                            if (username.isEmpty() || username.equals("null")) {
+                                // Belum punya username, paksa buat
+                                startActivity(new Intent(RegisterActivity.this, UsernameActivity.class));
+                            } else {
+                                // Sudah punya, langsung masuk
+                                startActivity(new Intent(RegisterActivity.this, HomeActivity.class));
+                            }
+                            finish();
+                        }
+                        @Override public void onError(String message) {
+                            // Kalau error D1, anggap belum punya username
+                            startActivity(new Intent(RegisterActivity.this, UsernameActivity.class));
+                            finish();
+                        }
+                    });
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, AuthHelper.getErrorMessage(e), Toast.LENGTH_SHORT).show());
         });
