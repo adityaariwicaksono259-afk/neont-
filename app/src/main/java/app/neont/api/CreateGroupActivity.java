@@ -51,6 +51,10 @@ public class CreateGroupActivity extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("groups").child(groupId).setValue(groupData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Grup/Channel dibuat!", Toast.LENGTH_SHORT).show();
+                    // Langsung ke GroupInfoActivity
+                    Intent intent = new Intent(this, GroupInfoActivity.class);
+                    intent.putExtra("groupId", groupId);
+                    startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());

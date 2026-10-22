@@ -28,5 +28,6 @@
         <activity android:name=".GroupInfoActivity" android:exported="false" />
         <activity android:name=".SearchActivity" android:exported="false" />
         <activity android:name=".AddContactActivity" android:exported="false" />
+        <activity android:name=".CreateGroupActivity" android:exported="false" />
     </application>
 </manifest>

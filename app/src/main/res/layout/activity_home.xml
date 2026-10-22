@@ -10,7 +10,7 @@
         app:layout_constraintTop_toTopOf="parent">
         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
             android:text="NEONT" android:textColor="@color/tg_blue" android:textSize="24sp" android:textStyle="bold"/>
-        <ImageView android:layout_width="24dp" android:layout_height="24dp"
+        <ImageView android:id="@+id/btnMenuTop" android:layout_width="24dp" android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_more" app:tint="@color/tg_text_gray"/>
     </LinearLayout>
 
@@ -27,7 +27,7 @@
         <EditText android:id="@+id/etSearchHome" android:layout_width="0dp" android:layout_height="match_parent"
             android:layout_weight="1" android:hint="Cari Obrolan" android:background="@android:color/transparent"
             android:paddingStart="8dp" android:textColor="@color/tg_text" android:textSize="14sp" android:inputType="text"
-            android:importantForAutofill="no" android:focusable="false"/>
+            android:importantForAutofill="no" android:focusable="true" android:focusableInTouchMode="true"/>
     </LinearLayout>
 
     <!-- Tab Filter: All, Unread, Neon Combo X -->
@@ -59,22 +59,22 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/tg_blue"/>
+            <ImageView android:id="@+id/btnMenuTop" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/tg_blue"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Obrolan" android:textSize="10sp" android:textColor="@color/tg_blue"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
+            <ImageView android:id="@+id/btnMenuTop" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kontak" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="@color/tg_text_gray"/>
+            <ImageView android:id="@+id/btnMenuTop" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="@color/tg_text_gray"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pengaturan" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_call" app:tint="@color/tg_text_gray"/>
+            <ImageView android:id="@+id/btnMenuTop" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
     </LinearLayout>

@@ -6,7 +6,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,9 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
     private RecyclerView rvChats;
@@ -29,7 +29,6 @@ public class HomeActivity extends AppCompatActivity {
     private DatabaseReference mDb;
     private String myUid;
     private TextView tvBadge;
-    private String currentTab = "all";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         rvChats = findViewById(R.id.rvChats);
         EditText etSearch = findViewById(R.id.etSearchHome);
         tvBadge = findViewById(R.id.tvBadge);
-        TextView tabAll = findViewById(R.id.tabAll);
-        TextView tabUnread = findViewById(R.id.tabUnread);
-        TextView tabNeon = findViewById(R.id.tabNeon);
+        ImageView btnMenu = findViewById(R.id.btnMenuTop);
         mDb = FirebaseDatabase.getInstance().getReference();
         myUid = FirebaseAuth.getInstance().getUid();
 
@@ -56,13 +53,13 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.setLayoutManager(new LinearLayoutManager(this));
         rvChats.setAdapter(adapter);
 
-        loadChats();
-        loadUnreadCount();
+        // Titik tiga: buka CreateGroupActivity
+        btnMenu.setOnClickListener(v -> {
+            startActivity(new Intent(this, CreateGroupActivity.class));
+        });
 
-        // Logika Tab Filter
-        tabAll.setOnClickListener(v -> { currentTab = "all"; updateTabUI(tabAll, tabUnread, tabNeon); filterTab(); });
-        tabUnread.setOnClickListener(v -> { currentTab = "unread"; updateTabUI(tabUnread, tabAll, tabNeon); filterTab(); });
-        tabNeon.setOnClickListener(v -> { currentTab = "neon"; updateTabUI(tabNeon, tabAll, tabUnread); filterTab(); });
+        loadChats();
+        loadGroups();
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -73,26 +70,33 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void updateTabUI(TextView active, TextView... others) {
-        active.setTextColor(getResources().getColor(R.color.tg_blue));
-        active.setBackgroundResource(R.drawable.bg_tab_active);
-        for (TextView other : others) {
-            other.setTextColor(getResources().getColor(R.color.tg_text_gray));
-            other.setBackgroundResource(0);
-        }
-    }
-
-    private void filterTab() {
-        userList.clear();
-        if ("all".equals(currentTab)) {
-            userList.addAll(allUsers);
-        } else if ("unread".equals(currentTab)) {
-            // Sementara: tampilin semua (nanti difilter unread)
-            userList.addAll(allUsers);
-        } else if ("neon".equals(currentTab)) {
-            // Sementara: kosong (nanti tools dari javin-cf)
-        }
-        adapter.notifyDataSetChanged();
+    private void loadGroups() {
+        mDb.child("groups").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    String groupId = data.getKey();
+                    String title = data.child("title").getValue(String.class);
+                    String type = data.child("type").getValue(String.class);
+                    if (title != null && myUid != null) {
+                        boolean isMember = data.child("members").hasChild(myUid);
+                        if (isMember) {
+                            UserModel group = new UserModel("group_" + groupId, title, type);
+                            boolean exists = false;
+                            for (UserModel u : allUsers) {
+                                if (u.getUid().equals(group.getUid())) { exists = true; break; }
+                            }
+                            if (!exists) {
+                                allUsers.add(group);
+                                userList.add(group);
+                            }
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+            @Override public void onCancelled(DatabaseError error) {}
+        });
     }
 
     private void loadChats() {
@@ -100,68 +104,16 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 allUsers.clear();
+                userList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     String uid = data.getKey();
                     if (uid != null && !uid.equals(myUid)) {
                         String name = data.child("name").getValue(String.class);
                         allUsers.add(new UserModel(uid, name, ""));
+                        userList.add(new UserModel(uid, name, ""));
                     }
                 }
-                filterTab();
-                sortByLastMessage();
-            }
-            @Override public void onCancelled(DatabaseError error) {}
-        });
-    }
-
-    private void sortByLastMessage() {
-        Map<String, Long> lastMessageTimes = new HashMap<>();
-        for (UserModel user : allUsers) {
-            String roomId = (myUid.compareTo(user.getUid()) < 0) ? myUid + "_" + user.getUid() : user.getUid() + "_" + myUid;
-            mDb.child("chats").child(roomId).orderByChild("timestamp").limitToLast(1)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        long time = 0;
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            Long ts = data.child("timestamp").getValue(Long.class);
-                            if (ts != null) time = ts;
-                        }
-                        lastMessageTimes.put(user.getUid(), time);
-                        Collections.sort(userList, (u1, u2) -> {
-                            Long t1 = lastMessageTimes.get(u1.getUid());
-                            Long t2 = lastMessageTimes.get(u2.getUid());
-                            if (t1 == null) t1 = 0L;
-                            if (t2 == null) t2 = 0L;
-                            return t2.compareTo(t1);
-                        });
-                        adapter.notifyDataSetChanged();
-                    }
-                    @Override public void onCancelled(DatabaseError error) {}
-                });
-        }
-    }
-
-    private void loadUnreadCount() {
-        mDb.child("chats").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                int unread = 0;
-                for (DataSnapshot room : snapshot.getChildren()) {
-                    for (DataSnapshot msg : room.getChildren()) {
-                        String receiver = msg.child("receiverId").getValue(String.class);
-                        String status = msg.child("status").getValue(String.class);
-                        if (myUid != null && myUid.equals(receiver) && !"read".equals(status)) {
-                            unread++;
-                        }
-                    }
-                }
-                if (unread > 0) {
-                    tvBadge.setVisibility(View.VISIBLE);
-                    tvBadge.setText(unread > 99 ? "99+" : String.valueOf(unread));
-                } else {
-                    tvBadge.setVisibility(View.GONE);
-                }
+                adapter.notifyDataSetChanged();
             }
             @Override public void onCancelled(DatabaseError error) {}
         });
