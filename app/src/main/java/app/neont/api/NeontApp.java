@@ -1,8 +1,8 @@
 package app.neont.api;
 
 import android.app.Application;
-import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
+import androidx.emoji2.text.EmojiCompat;
 
 public class NeontApp extends Application {
     @Override
@@ -10,8 +10,11 @@ public class NeontApp extends Application {
         super.onCreate();
         
         // Inisialisasi Emoji2 (Download font emoji terbaru)
-        EmojiCompat.Config config = new DefaultEmojiCompatConfig(this);
-        config.setReplaceAll(true);
-        EmojiCompat.init(config);
+        // DefaultEmojiCompatConfig.create() mengembalikan config, bukan constructor
+        EmojiCompat.Config config = DefaultEmojiCompatConfig.create(this);
+        if (config != null) {
+            config.setReplaceAll(true);
+            EmojiCompat.init(config);
+        }
     }
 }
