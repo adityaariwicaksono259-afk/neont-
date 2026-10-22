@@ -15,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class UserProfileActivity extends AppCompatActivity {
-
     private TextView tvName, tvStatus, tvUsername;
     private DatabaseReference mDb;
     private String targetUid, myUid;
@@ -28,14 +27,12 @@ public class UserProfileActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tvUserName);
         tvStatus = findViewById(R.id.tvUserStatus);
         tvUsername = findViewById(R.id.tvUserUsername);
-
         mDb = FirebaseDatabase.getInstance().getReference();
         myUid = FirebaseAuth.getInstance().getUid();
         targetUid = getIntent().getStringExtra("uid");
 
         if (targetUid == null) { finish(); return; }
 
-        // Load Data User
         mDb.child("users").child(targetUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -43,7 +40,6 @@ public class UserProfileActivity extends AppCompatActivity {
                     String name = snapshot.child("name").getValue(String.class);
                     String username = snapshot.child("username").getValue(String.class);
                     String status = snapshot.child("status").getValue(String.class);
-
                     tvName.setText(name != null ? name : "User");
                     tvUsername.setText(username != null ? "@" + username : "@user");
                     tvStatus.setText(status != null && status.equals("online") ? "online" : "tak terlihat sangat lama");
@@ -52,7 +48,6 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override public void onCancelled(DatabaseError error) {}
         });
 
-        // Tombol Obrolan
         findViewById(R.id.btnMessageUser).setOnClickListener(v -> {
             Intent intent = new Intent(this, ChatRoomActivity.class);
             intent.putExtra("uid", targetUid);
@@ -60,7 +55,6 @@ public class UserProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Tombol Menu (Blokir, Laporkan)
         findViewById(R.id.btnMenuProfile).setOnClickListener(v -> {
             String[] options = {"Blokir User", "Laporkan User"};
             new AlertDialog.Builder(this)
@@ -77,7 +71,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void blokirUser() {
         mDb.child("blocks").child(myUid).child(targetUid).setValue(true)
-            .addOnSuccessListener(aVoid -> Toast.makeText(this, "User Diblokir", Toast.LENGTH_SHORT).show())
-            .addOnFailureListener(e -> Toast.makeText(this, "Gagal blokir: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            .addOnSuccessListener(aVoid -> Toast.makeText(this, "User Diblokir", Toast.LENGTH_SHORT).show());
     }
 }
