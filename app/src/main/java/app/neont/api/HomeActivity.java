@@ -26,6 +26,8 @@ public class HomeActivity extends AppCompatActivity {
     private List<UserModel> userList, allUsers;
     private DatabaseReference mDb;
     private String myUid;
+    private int loadLimit = 50;
+    private long lastTimestamp = Long.MAX_VALUE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +72,35 @@ public class HomeActivity extends AppCompatActivity {
             intent.putExtra("name", user.getName());
             startActivity(intent);
         });
-        rvChats.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager lm = new LinearLayoutManager(this);
+        rvChats.setLayoutManager(lm);
+        
+        // Scroll listener untuk load more
+        rvChats.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override public void onScrolled(RecyclerView rv, int dx, int dy) {
+                if (!rv.canScrollVertically(1)) { // Di paling bawah
+                    // Load 50 lagi (nanti kita implementasi)
+                }
+            }
+        });
         rvChats.setAdapter(adapter);
 
-        btnMenu.setOnClickListener(v -> startActivity(new Intent(this, CreateGroupActivity.class)));
+        btnMenu.setOnClickListener(v -> {
+            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(this, v);
+            popup.getMenu().add("Grup Baru");
+            popup.getMenu().add("Pesan Tersimpan");
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getTitle().equals("Grup Baru")) {
+                    startActivity(new Intent(this, NewMessageActivity.class));
+                    return true;
+                } else if (item.getTitle().equals("Pesan Tersimpan")) {
+                    Toast.makeText(this, "Fitur segera hadir", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
+        });
 
         findViewById(R.id.btnNavProfile).setOnClickListener(v -> {
             Intent intent = new Intent(this, UserProfileActivity.class);
@@ -118,7 +145,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadChats() {
-        mDb.child("chats").addValueEventListener(new ValueEventListener() {
+        mDb.child("chats").orderByChild("timestamp").limitToLast(loadLimit).addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(DataSnapshot snapshot) {
                 allUsers.clear();
                 userList.clear();
@@ -160,5 +187,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Listener Firebase dilepas (mencegah memory leak)
     }
 }

@@ -77,7 +77,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                         String status = data.child("status").getValue(String.class);
                         Long timestamp = data.child("timestamp").getValue(Long.class);
 
-                        holder.tvPreview.setText(text != null ? text : "Klik untuk mulai chat");
+                        // DEKRIPSI PREVIEW
+                        if (text != null) {
+                            // Ambil roomId untuk kunci dekripsi
+                            String decryptRoomId = roomId;
+                            String decryptedText = CryptoHelper.decrypt(text, decryptRoomId);
+                            holder.tvPreview.setText(decryptedText);
+                        } else {
+                            holder.tvPreview.setText("Klik untuk mulai chat");
+                        }
 
                         // LOGIKA TELEGRAM: Centang (sent/delivered/read)
                         if ("read".equals(status)) {

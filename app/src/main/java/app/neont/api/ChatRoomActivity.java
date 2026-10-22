@@ -3,6 +3,7 @@ package app.neont.api;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,7 +57,18 @@ public class ChatRoomActivity extends AppCompatActivity {
         String groupId = getIntent().getStringExtra("groupId");
         if (groupId != null) { roomId = "group_" + groupId; receiverId = groupId; }
         receiverName = getIntent().getStringExtra("name");
-        tvChatName.setText(receiverName != null ? receiverName : "Chat");
+        if (groupId != null) {
+            // Ambil nama grup dari Firebase
+            mDb.child("groups").child(groupId).child("title").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override public void onDataChange(DataSnapshot s) {
+                    String title = s.getValue(String.class);
+                    if (title != null) tvChatName.setText(title);
+                }
+                @Override public void onCancelled(DatabaseError e) {}
+            });
+        } else {
+            tvChatName.setText(receiverName != null ? receiverName : "Chat");
+        }
 
         if (senderId != null && receiverId != null && groupId == null) {
             if (senderId.compareTo(receiverId) < 0) roomId = senderId + "_" + receiverId;
@@ -73,17 +85,33 @@ public class ChatRoomActivity extends AppCompatActivity {
         });
 
         // Cek tipe chat (private/group/channel)
-        mDb.child("chats").child(roomId).child("type").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDb.child("groups").child(receiverId).child("type").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override public void onDataChange(DataSnapshot snapshot) {
                 String type = snapshot.getValue(String.class);
                 if (type != null) chatType = type;
-                if ("channel".equals(chatType)) layoutInput.setVisibility(LinearLayout.GONE);
+                if ("channel".equals(chatType)) {
+                    layoutInput.setVisibility(LinearLayout.GONE);
+                    tvChatStatus.setText("Channel");
+                } else {
+                    tvChatStatus.setText("Grup");
+                }
             }
             @Override public void onCancelled(DatabaseError error) {}
         });
 
         messageList = new ArrayList<>();
-        adapter = new MessageAdapter(messageList, message -> showMessageMenu(message));
+        adapter = new MessageAdapter(messageList, message -> showMessageMenu(message), (message, emoji) -> {
+            // Toggle Reaction
+            String uid = senderId;
+            com.google.firebase.database.DatabaseReference ref = messagesRef.child(message.getMessageId()).child("reactions").child(emoji).child(uid);
+            ref.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                @Override public void onDataChange(com.google.firebase.database.DataSnapshot snapshot) {
+                    if (snapshot.exists()) ref.removeValue();
+                    else ref.setValue(true);
+                }
+                @Override public void onCancelled(com.google.firebase.database.DatabaseError error) {}
+            });
+        });
         rvMessages.setLayoutManager(new LinearLayoutManager(this));
         rvMessages.setAdapter(adapter);
 
@@ -99,7 +127,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     private void showMessageMenu(MessageModel message) {
-        String[] options = {"Balas (Reply)", "Reaction ❤️", "Reaction 👍", "Salin (Copy)", "Hapus"};
+        String[] options = {"Balas (Reply)", "Reaction ❤️", "Reaction 👍", "Salin (Copy)", "Teruskan", "Ganti Wallpaper", "Hapus"};
         new AlertDialog.Builder(this)
             .setTitle("Pesan")
             .setItems(options, (dialog, which) -> {
@@ -116,6 +144,12 @@ public class ChatRoomActivity extends AppCompatActivity {
                     clipboard.setPrimaryClip(clip);
                     Toast.makeText(this, "Disalin!", Toast.LENGTH_SHORT).show();
                 } else if (which == 4) {
+                    // Forward (Teruskan)
+                    Toast.makeText(this, "Pilih chat tujuan (segera hadir)", Toast.LENGTH_SHORT).show();
+                } else if (which == 5) {
+                    // Ganti Wallpaper
+                    showWallpaperDialog();
+                } else if (which == 6) {
                     messagesRef.child(message.getMessageId()).removeValue();
                 }
             })
@@ -182,6 +216,14 @@ public class ChatRoomActivity extends AppCompatActivity {
                         // Tandai "read" kalau pesan orang lain dibuka
                         if (!sender.equals(senderId) && (status == null || !"read".equals(status))) {
                             data.getRef().child("status").setValue("read");
+                            
+                            // Munculkan Notifikasi (jika bukan dari diri sendiri)
+                            if (!isFinishing() && !sender.equals(senderId)) {
+                                String senderName = data.child("senderName").getValue(String.class);
+                                NotificationHelper.showNotification(ChatRoomActivity.this, 
+                                    senderName != null ? senderName : "Pesan Baru", 
+                                    text, roomId, senderName != null ? senderName : "User");
+                            }
                         }
                     }
                 }
@@ -197,5 +239,22 @@ public class ChatRoomActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (messagesRef != null && messageListener != null) messagesRef.removeEventListener(messageListener);
+    }
+
+    private void showWallpaperDialog() {
+        String[] colors = {"Default", "Hijau", "Biru", "Ungu", "Gelap"};
+        new AlertDialog.Builder(this)
+            .setTitle("Pilih Wallpaper")
+            .setItems(colors, (dialog, which) -> {
+                int color = 0xFFFFFFFF; // Default
+                if (which == 1) color = 0xFFE8F5E9; // Hijau
+                else if (which == 2) color = 0xFFE3F2FD; // Biru
+                else if (which == 3) color = 0xFFF3E5F5; // Ungu
+                else if (which == 4) color = 0xFF212121; // Gelap
+                
+                View root = findViewById(android.R.id.content);
+                root.setBackgroundColor(color);
+                Toast.makeText(this, "Wallpaper diganti", Toast.LENGTH_SHORT).show();
+            }).show();
     }
 }

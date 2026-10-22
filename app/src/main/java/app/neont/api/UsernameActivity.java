@@ -65,7 +65,11 @@ public class UsernameActivity extends AppCompatActivity {
                     @Override
                     public void onError(String message) {
                         ButtonHelper.hideSpinner(btnSave, spinner, "SIMPAN");
-                        Toast.makeText(UsernameActivity.this, "Gagal: " + message, Toast.LENGTH_SHORT).show();
+                        if (message.contains("409") || message.contains("sudah dipakai")) {
+                            Toast.makeText(UsernameActivity.this, "Username sudah dipakai orang lain!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(UsernameActivity.this, "Gagal: " + message, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             } catch (Exception e) {

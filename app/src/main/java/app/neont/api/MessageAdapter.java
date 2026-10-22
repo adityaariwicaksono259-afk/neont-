@@ -1,6 +1,5 @@
 package app.neont.api;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,21 +18,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<MessageModel> messageList;
     private String currentUserId;
     private OnMessageLongClickListener longClickListener;
+    private OnReactionClickListener reactionClickListener;
     private static final int TYPE_SENT = 1, TYPE_RECEIVED = 2;
 
-    public interface OnMessageLongClickListener {
-        void onMessageLongClick(MessageModel message);
-    }
+    public interface OnMessageLongClickListener { void onMessageLongClick(MessageModel message); }
+    public interface OnReactionClickListener { void onReactionClick(MessageModel message, String emoji); }
 
-    public MessageAdapter(List<MessageModel> messageList) {
+    public MessageAdapter(List<MessageModel> messageList, OnMessageLongClickListener longClickListener, OnReactionClickListener reactionClickListener) {
         this.messageList = messageList;
         this.currentUserId = FirebaseAuth.getInstance().getUid();
-    }
-
-    public MessageAdapter(List<MessageModel> messageList, OnMessageLongClickListener listener) {
-        this.messageList = messageList;
-        this.currentUserId = FirebaseAuth.getInstance().getUid();
-        this.longClickListener = listener;
+        this.longClickListener = longClickListener;
+        this.reactionClickListener = reactionClickListener;
     }
 
     @Override
@@ -43,8 +38,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         else return TYPE_RECEIVED;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int layout = (viewType == TYPE_SENT) ? R.layout.item_message_sent : R.layout.item_message_received;
         View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
@@ -63,18 +57,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (message.getReplyToMsgId() != null && holder.layoutQuote != null) {
             holder.layoutQuote.setVisibility(LinearLayout.VISIBLE);
             if (holder.tvQuoteText != null) holder.tvQuoteText.setText("Membalas pesan");
+        } else if (holder.layoutQuote != null) {
+            holder.layoutQuote.setVisibility(LinearLayout.GONE);
         }
 
-        // Reaction (Semua Emoji)
-        if (holder.layoutReaction != null && message.getReactions() != null && !message.getReactions().isEmpty()) {
-            holder.layoutReaction.setVisibility(LinearLayout.VISIBLE);
-            StringBuilder emojiText = new StringBuilder();
-            for (Map.Entry<String, Map<String, Boolean>> entry : message.getReactions().entrySet()) {
-                String emoji = entry.getKey();
-                int count = entry.getValue().size();
-                emojiText.append(emoji).append(count).append(" ");
+        // Reaction (Toggle)
+        if (holder.layoutReaction != null) {
+            if (message.getReactions() != null && !message.getReactions().isEmpty()) {
+                holder.layoutReaction.setVisibility(LinearLayout.VISIBLE);
+                StringBuilder emojiText = new StringBuilder();
+                for (Map.Entry<String, Map<String, Boolean>> entry : message.getReactions().entrySet()) {
+                    emojiText.append(entry.getKey()).append(entry.getValue().size()).append(" ");
+                }
+                if (holder.tvReaction != null) holder.tvReaction.setText(emojiText.toString());
+                
+                // Klik reaction untuk toggle
+                holder.layoutReaction.setOnClickListener(v -> {
+                    if (reactionClickListener != null) {
+                        // Ambil emoji pertama untuk di-toggle
+                        String firstEmoji = message.getReactions().keySet().iterator().next();
+                        reactionClickListener.onReactionClick(message, firstEmoji);
+                    }
+                });
+            } else {
+                holder.layoutReaction.setVisibility(LinearLayout.GONE);
             }
-            if (holder.tvReaction != null) holder.tvReaction.setText(emojiText.toString());
         }
 
         if (holder.viewType == TYPE_SENT) {
@@ -90,8 +97,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         });
     }
 
-    @Override
-    public int getItemCount() { return messageList.size(); }
+    @Override public int getItemCount() { return messageList.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvMessageText, tvMessageTime, tvStatus, tvQuoteText, tvReaction;

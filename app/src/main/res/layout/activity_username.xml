@@ -5,16 +5,16 @@
     android:background="@color/tg_bg" android:padding="32dp">
 
     <TextView android:id="@+id/tvTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Buat Username" android:textSize="28sp" android:textStyle="bold" android:textColor="@color/tg_text"
+        android:text="Create Username" android:textSize="28sp" android:textStyle="bold" android:textColor="@color/tg_text"
         app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" />
 
     <TextView android:id="@+id/tvInfo" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Username wajib diisi, tidak bisa dilewati."
+        android:text="Create Username"
         android:textColor="@color/tg_text_gray" android:textSize="12sp"
         android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
     <EditText android:id="@+id/etUsername" android:layout_width="match_parent" android:layout_height="52dp"
-        android:hint="Username (tanpa @)" android:inputType="text" android:maxLength="25"
+        android:hint="your username" android:inputType="text" android:maxLength="25"
         android:background="@drawable/bg_input_telegram" android:padding="16dp"
         android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@id/tvInfo" />
 

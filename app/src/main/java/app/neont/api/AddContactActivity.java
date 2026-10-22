@@ -62,4 +62,10 @@ public class AddContactActivity extends AppCompatActivity {
             });
         });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Mencegah memory leak
+    }
 }

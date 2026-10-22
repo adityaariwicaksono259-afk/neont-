@@ -50,15 +50,15 @@
                 android:layout_marginBottom="16dp">
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Akun" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Nomor, Username, Bio" android:paddingVertical="12dp"/>
+                <TextView android:id="@+id/rowAkun" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Nomor, Username, Bio" android:paddingVertical="12dp"/>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Privasi &amp; Keamanan" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Terakhir Terlihat, Perangkat, Passcode" android:paddingVertical="12dp"/>
+                <TextView android:id="@+id/rowPrivacy" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Terakhir Terlihat, Perangkat, Passcode" android:paddingVertical="12dp"/>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Notifikasi" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Suara, Panggilan, Emblem" android:paddingVertical="12dp"/>
+                <TextView android:id="@+id/rowNotif" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Suara, Panggilan, Emblem" android:paddingVertical="12dp"/>
             </LinearLayout>
 
             <!-- Card 2 -->
@@ -71,15 +71,15 @@
                 android:layout_marginBottom="16dp">
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Data dan Penyimpanan" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Pengaturan pengunduhan media" android:paddingVertical="12dp"/>
+                <TextView android:id="@+id/rowData" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Pengaturan pengunduhan media" android:paddingVertical="12dp"/>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Folder Obrolan" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Sortir obrolan ke dalam folder" android:paddingVertical="12dp"/>
+                <TextView android:id="@+id/rowFolder" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Sortir obrolan ke dalam folder" android:paddingVertical="12dp"/>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perangkat" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Kelola perangkat terhubung" android:paddingVertical="12dp"/>
+                <TextView android:id="@+id/rowDevice" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Kelola perangkat terhubung" android:paddingVertical="12dp"/>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Penghematan Daya" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>

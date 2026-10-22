@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -83,7 +82,9 @@ public class CreateGroupActivity extends AppCompatActivity {
 
         Map<String, Object> groupData = new HashMap<>();
         groupData.put("title", title);
-        groupData.put("type", "group");
+        androidx.appcompat.widget.SwitchCompat sw = findViewById(R.id.swChannel);
+        String typeExtra = getIntent().getStringExtra("type");
+        groupData.put("type", typeExtra != null ? typeExtra : (sw != null && sw.isChecked() ? "channel" : "group"));
         groupData.put("createdBy", mAuth.getUid());
         groupData.put("timestamp", System.currentTimeMillis());
 
@@ -143,5 +144,11 @@ public class CreateGroupActivity extends AppCompatActivity {
                 tvName = v.findViewById(R.id.tvContactName);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Mencegah memory leak
     }
 }

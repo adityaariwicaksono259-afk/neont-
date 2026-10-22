@@ -41,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
         ButtonHelper.setup(btnLogin, spinner, etEmail, etPassword);
 
+        // Minta izin notifikasi (Android 13+)
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 300);
+            }
+        }
+
         ivTogglePass.setOnClickListener(v -> {
             if (isPassVisible) {
                 etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);

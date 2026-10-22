@@ -1,6 +1,7 @@
 package app.neont.api;
 
 import android.content.Intent;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -57,8 +58,29 @@ public class UserProfileActivity extends AppCompatActivity {
             layoutSettings.setVisibility(View.VISIBLE);
             btnMessage.setVisibility(View.GONE);
 
-            findViewById(R.id.btnSetPhoto).setOnClickListener(v -> Toast.makeText(this, "Fitur Pasang Foto", Toast.LENGTH_SHORT).show());
-            findViewById(R.id.btnEditInfo).setOnClickListener(v -> Toast.makeText(this, "Fitur Edit Info", Toast.LENGTH_SHORT).show());
+            findViewById(R.id.btnSetPhoto).setOnClickListener(v -> {
+            String[] options = {"Kamera", "Galeri"};
+            new android.app.AlertDialog.Builder(this)
+                .setTitle("Pasang Foto Profil")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        Toast.makeText(this, "Fitur Kamera segera hadir", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Buka galeri (Butuh Activity Result API, sementara kita pakai Intent sederhana)
+                        // Minta izin galeri dulu (Android 13+)
+                        if (android.os.Build.VERSION.SDK_INT >= 33) {
+                            if (androidx.core.content.ContextCompat.checkSelfPermission(UserProfileActivity.this, android.Manifest.permission.READ_MEDIA_IMAGES) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 200);
+                            } else {
+                                openGallery();
+                            }
+                        } else {
+                            openGallery();
+                        }
+                    }
+                }).show();
+        });
+            findViewById(R.id.btnEditInfo).setOnClickListener(v -> startActivity(new Intent(this, EditProfileActivity.class)));
             findViewById(R.id.btnSettings).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
             findViewById(R.id.rowEditProfile).setOnClickListener(v -> Toast.makeText(this, "Fitur Edit Profil", Toast.LENGTH_SHORT).show());
         } else {
@@ -71,6 +93,61 @@ public class UserProfileActivity extends AppCompatActivity {
                 intent.putExtra("name", tvName.getText().toString());
                 startActivity(intent);
             });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            android.net.Uri selectedImage = data.getData();
+            if (selectedImage != null) {
+                // Ubah Uri jadi File
+                java.io.File file = new java.io.File(getCacheDir(), "avatar.jpg");
+                try (java.io.InputStream input = getContentResolver().openInputStream(selectedImage);
+                     java.io.FileOutputStream output = new java.io.FileOutputStream(file)) {
+                    byte[] buffer = new byte[4096];
+                    int len;
+                    while ((len = input.read(buffer)) > 0) output.write(buffer, 0, len);
+                } catch (Exception e) { e.printStackTrace(); }
+
+                // Upload ke Filebase
+                UploadHelper.uploadAvatar(file, new UploadHelper.UploadCallback() {
+                    @Override public void onSuccess(String publicUrl) {
+                        // Simpan URL ke D1
+                        try {
+                            org.json.JSONObject update = new org.json.JSONObject();
+                            update.put("photo_url", publicUrl);
+                            D1Helper.updateUser(myUid, update, new D1Helper.UserCallback() {
+                                @Override public void onSuccess(org.json.JSONObject user) {
+                                    Toast.makeText(UserProfileActivity.this, "Foto profil diperbarui", Toast.LENGTH_SHORT).show();
+                                }
+                                @Override public void onError(String message) {
+                                    Toast.makeText(UserProfileActivity.this, "Gagal simpan: " + message, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } catch (Exception e) { e.printStackTrace(); }
+                    }
+                    @Override public void onError(String message) {
+                        Toast.makeText(UserProfileActivity.this, "Upload gagal: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
+    private void openGallery() {
+        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 200 && grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            openGallery();
+        } else if (requestCode == 200) {
+            Toast.makeText(this, "Izin galeri ditolak", Toast.LENGTH_SHORT).show();
         }
     }
 }

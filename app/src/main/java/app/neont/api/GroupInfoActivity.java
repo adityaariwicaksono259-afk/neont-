@@ -41,6 +41,23 @@ public class GroupInfoActivity extends AppCompatActivity {
             @Override public void onCancelled(DatabaseError error) {}
         });
 
+        // Tombol Share Link
+        findViewById(R.id.btnShowQr).setOnClickListener(v -> {
+            String link = "https://neont.app/g/" + groupId;
+            // Buka Activity QR (kita buat nanti)
+            android.content.Intent intent = new android.content.Intent(this, QrActivity.class);
+            intent.putExtra("link", link);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.btnShareLink).setOnClickListener(v -> {
+            String link = "https://neont.app/g/" + groupId;
+            android.content.Intent share = new android.content.Intent(android.content.Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(android.content.Intent.EXTRA_TEXT, "Gabung ke grup NEONT: " + link);
+            startActivity(android.content.Intent.createChooser(share, "Bagikan Link Grup"));
+        });
+
         btnChat.setOnClickListener(v -> {
             Intent intent = new Intent(this, ChatRoomActivity.class);
             intent.putExtra("groupId", groupId);
@@ -51,5 +68,11 @@ public class GroupInfoActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(v -> {
             // Nanti kita bikin AddMemberActivity
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Mencegah memory leak
     }
 }

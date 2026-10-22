@@ -1,49 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/tg_bg" android:padding="32dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F2F5">
 
-    <ImageView android:id="@+id/ivLogo" android:layout_width="96dp" android:layout_height="96dp"
-        android:src="@drawable/ic_neont_logo" android:layout_marginTop="64dp"
-        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
 
-    <TextView android:id="@+id/tvTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Masuk ke NEONT" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/tg_text"
-        android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@id/ivLogo"
-        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="32dp"/>
 
-    <EditText android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="52dp"
-        android:hint="Email" android:inputType="textEmailAddress" android:background="@drawable/bg_input_telegram"
-        android:padding="16dp" android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        android:importantForAutofill="no" android:autofillHints="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selamat Datang di NEONT"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="24dp"/>
 
-    <LinearLayout android:id="@+id/layoutPassword" android:layout_width="match_parent" android:layout_height="52dp"
-        android:orientation="horizontal" android:background="@drawable/bg_input_telegram"
-        android:paddingStart="16dp" android:paddingEnd="16dp" android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/etEmail">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-        <EditText android:id="@+id/etPassword" android:layout_width="0dp" android:layout_height="match_parent"
-            android:layout_weight="1" android:hint="Password" android:inputType="textPassword"
-            android:background="@android:color/transparent" android:padding="0dp"
-            android:importantForAutofill="no" android:autofillHints="" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <ImageView android:id="@+id/ivTogglePass" android:layout_width="24dp" android:layout_height="24dp"
-            android:src="@drawable/ic_eye_open" app:tint="@color/tg_text_gray"
-            android:layout_gravity="center_vertical" android:padding="4dp"/>
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_search_telegram"
+                    android:layout_marginBottom="12dp"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <EditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:padding="12dp"
+                        android:paddingEnd="40dp"
+                        android:background="@drawable/bg_search_telegram"/>
+
+                    <ImageView
+                        android:id="@+id/ivTogglePass"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_view"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="12dp"
+                        app:tint="#8E8E93"/>
+                </RelativeLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="MASUK"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="#007AFF"
+                    android:textColor="#FFFFFF"/>
+
+                <ProgressBar
+                    android:id="@+id/spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvGoToRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Belum punya akun? Daftar"
+                    android:textColor="#007AFF"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-
-    <ProgressBar android:id="@+id/spinner" android:layout_width="52dp" android:layout_height="52dp"
-        android:visibility="gone" app:layout_constraintTop_toBottomOf="@id/layoutPassword"
-        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-
-    <Button android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="52dp"
-        android:text="MASUK" android:background="@drawable/bg_button_telegram" android:textColor="#FFFFFF"
-        android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@id/layoutPassword" />
-
-    <TextView android:id="@+id/tvGoToRegister" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Belum punya akun? Daftar" android:textColor="@color/tg_blue" android:textStyle="bold"
-        android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@id/btnLogin"
-        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

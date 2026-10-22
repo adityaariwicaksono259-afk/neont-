@@ -20,6 +20,24 @@
         <TextView android:id="@+id/tvGroupMembers" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="0 Anggota" android:textColor="@color/tg_text_gray" android:layout_marginTop="8dp"/>
 
+        <Button
+            android:id="@+id/btnShowQr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lihat QR Code"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#007AFF"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/btnShareLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bagikan Link Grup"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#34C759"
+            android:textColor="#FFFFFF"/>
+
         <Button android:id="@+id/btnChatGroup" android:layout_width="match_parent" android:layout_height="52dp"
             android:text="BUKA OBROLAN" android:background="@drawable/bg_button_telegram"
             android:textColor="#FFFFFF" android:layout_marginTop="24dp"/>
