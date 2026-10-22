@@ -49,6 +49,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         mDb = FirebaseDatabase.getInstance().getReference();
         senderId = FirebaseAuth.getInstance().getUid();
         receiverId = getIntent().getStringExtra("uid");
+        String groupId = getIntent().getStringExtra("groupId");
+        if (groupId != null) { roomId = "group_" + groupId; receiverId = groupId; }
         receiverName = getIntent().getStringExtra("name");
         tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
