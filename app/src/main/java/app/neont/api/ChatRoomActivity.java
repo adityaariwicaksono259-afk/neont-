@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,9 @@ public class ChatRoomActivity extends AppCompatActivity {
     private MessageAdapter adapter;
     private ValueEventListener messageListener;
     private TextView tvChatName, tvChatStatus;
+
+    // Path dasar: chats/{roomId}/messages
+    private DatabaseReference messagesRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +58,21 @@ public class ChatRoomActivity extends AppCompatActivity {
         receiverName = getIntent().getStringExtra("name");
         tvChatName.setText(receiverName != null ? receiverName : "Chat");
 
-        if (senderId != null && receiverId != null) {
+        if (senderId != null && receiverId != null && groupId == null) {
             if (senderId.compareTo(receiverId) < 0) roomId = senderId + "_" + receiverId;
             else roomId = receiverId + "_" + senderId;
-        } else { finish(); return; }
+        } else if (roomId == null) { finish(); return; }
 
-        // Klik Header buka Detail Profil
+        // ✅ FIX: path sesuai firebase_rules.json
+        messagesRef = mDb.child("chats").child(roomId).child("messages");
+
         findViewById(R.id.headerChat).setOnClickListener(v -> {
             Intent intent = new Intent(this, UserProfileActivity.class);
             intent.putExtra("uid", receiverId);
             startActivity(intent);
         });
 
-        // Cek tipe chat
+        // Cek tipe chat (private/group/channel)
         mDb.child("chats").child(roomId).child("type").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override public void onDataChange(DataSnapshot snapshot) {
                 String type = snapshot.getValue(String.class);
@@ -83,7 +89,10 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         btnSend.setOnClickListener(v -> {
             String msg = etMessage.getText().toString().trim();
-            if (!msg.isEmpty()) kirimPesan(msg, null);
+            if (!msg.isEmpty()) {
+                String replyTo = (String) etMessage.getTag();
+                kirimPesan(msg, replyTo);
+            }
         });
 
         loadPesan();
@@ -98,35 +107,50 @@ public class ChatRoomActivity extends AppCompatActivity {
                     etMessage.setHint("Membalas: " + message.getText());
                     etMessage.setTag(message.getMessageId());
                 } else if (which == 1) {
-                    mDb.child("chats").child(roomId).child(message.getMessageId()).child("reactions").child("❤️").child(senderId).setValue(true);
+                    messagesRef.child(message.getMessageId()).child("reactions").child("❤️").child(senderId).setValue(true);
                 } else if (which == 2) {
-                    mDb.child("chats").child(roomId).child(message.getMessageId()).child("reactions").child("👍").child(senderId).setValue(true);
+                    messagesRef.child(message.getMessageId()).child("reactions").child("👍").child(senderId).setValue(true);
                 } else if (which == 3) {
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     android.content.ClipData clip = android.content.ClipData.newPlainText("Pesan", message.getText());
                     clipboard.setPrimaryClip(clip);
                     Toast.makeText(this, "Disalin!", Toast.LENGTH_SHORT).show();
                 } else if (which == 4) {
-                    mDb.child("chats").child(roomId).child(message.getMessageId()).removeValue();
+                    messagesRef.child(message.getMessageId()).removeValue();
                 }
             })
             .show();
     }
 
+    /**
+     * Tiru logika ChatActivity Telegram:
+     * - Optimistic UI: bubble muncul dulu dengan status SENDING
+     * - Firebase push → status jadi SENT
+     */
     private void kirimPesan(String text, String replyToId) {
+        String tempKey = messagesRef.push().getKey();
+        if (tempKey == null) return;
+
+        MessageModel optimistic = new MessageModel(tempKey, senderId, receiverId, text,
+                System.currentTimeMillis(), "SENDING", replyToId, null, null);
+        messageList.add(optimistic);
+        adapter.notifyItemInserted(messageList.size() - 1);
+        rvMessages.scrollToPosition(messageList.size() - 1);
+        etMessage.setText("");
+        etMessage.setHint("Pesan");
+        etMessage.setTag(null);
+
         Map<String, Object> messageData = new HashMap<>();
         messageData.put("senderId", senderId);
         messageData.put("receiverId", receiverId);
         messageData.put("text", text);
-        messageData.put("timestamp", System.currentTimeMillis());
+        messageData.put("timestamp", ServerValue.TIMESTAMP);
         messageData.put("status", "sent");
-        if (replyToId != null) messageData.put("reply_to_msg_id", replyToId);
+        if (replyToId != null) messageData.put("replyToMsgId", replyToId);
 
-        mDb.child("chats").child(roomId).push().setValue(messageData)
-            .addOnSuccessListener(aVoid -> {
-                etMessage.setText("");
-                etMessage.setHint("Pesan");
-                etMessage.setTag(null);
+        messagesRef.child(tempKey).setValue(messageData)
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Gagal kirim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
     }
 
@@ -140,7 +164,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                     String text = data.child("text").getValue(String.class);
                     Long timestamp = data.child("timestamp").getValue(Long.class);
                     String status = data.child("status").getValue(String.class);
-                    String replyTo = data.child("reply_to_msg_id").getValue(String.class);
+                    String replyTo = data.child("replyToMsgId").getValue(String.class);
                     String mediaUrl = data.child("mediaUrl").getValue(String.class);
                     Map<String, Map<String, Boolean>> reactions = new HashMap<>();
                     for (DataSnapshot reaction : data.child("reactions").getChildren()) {
@@ -150,9 +174,13 @@ public class ChatRoomActivity extends AppCompatActivity {
                     }
                     if (text != null && sender != null) {
                         messageList.add(new MessageModel(data.getKey(), sender, receiverId, text,
-                                timestamp != null ? timestamp : 0, status != null ? status : "sent",
+                                timestamp != null ? timestamp : 0,
+                                status != null ? status : "sent",
                                 replyTo, mediaUrl, reactions));
-                        if (!sender.equals(senderId)) data.getRef().child("status").setValue("read");
+                        // Tandai "read" kalau pesan orang lain dibuka
+                        if (!sender.equals(senderId) && (status == null || !"read".equals(status))) {
+                            data.getRef().child("status").setValue("read");
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -160,12 +188,12 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
             @Override public void onCancelled(DatabaseError error) {}
         };
-        mDb.child("chats").child(roomId).orderByChild("timestamp").addValueEventListener(messageListener);
+        messagesRef.orderByChild("timestamp").addValueEventListener(messageListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mDb != null && messageListener != null) mDb.child("chats").child(roomId).removeEventListener(messageListener);
+        if (messagesRef != null && messageListener != null) messagesRef.removeEventListener(messageListener);
     }
 }

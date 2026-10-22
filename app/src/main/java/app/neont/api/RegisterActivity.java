@@ -21,6 +21,9 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // KEAMANAN: Cegah screenshot di halaman login
+        getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, 
+                             android.view.WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();

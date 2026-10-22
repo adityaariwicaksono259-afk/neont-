@@ -1,25 +1,82 @@
-plugins { id 'com.android.application'; id 'com.google.gms.google-services' }
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
 android {
     namespace 'app.neont.api'
     compileSdk 34
-    defaultConfig { applicationId "app.neont.api"; minSdk 24; targetSdk 34; versionCode 1; versionName "1.0" }
-    buildTypes { release { minifyEnabled true
-            shrinkResources true; debuggable true; signingConfig signingConfigs.debug } }
-    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+
+    defaultConfig {
+        applicationId "app.neont.api"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        // Endpoint javin-cf (D1 + Filebase)
+        buildConfigField "String", "CF_BASE_URL", "\"https://jvin.pages.dev\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Debug signing sengaja (testing). Nanti ganti ke release key saat publish.
+            signingConfig signingConfigs.debug
+            debuggable false
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/AL2.0',
+                'META-INF/LGPL2.1'
+            ]
+        }
+    }
 }
+
 dependencies {
+    // ===== Firebase =====
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
+
+    // ===== UI =====
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.9'
     implementation 'com.airbnb.android:lottie:6.4.0'
-    implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community:16.0.1'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.lifecycle:lifecycle-process:2.7.0'
-    implementation 'com.amazonaws:aws-android-sdk-s3:2.73.0'
+
+    // ===== Security =====
+    implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community:16.0.1'
+
+    // ===== HTTP + JSON (untuk D1Helper & UploadHelper ke javin-cf) =====
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 }

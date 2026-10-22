@@ -58,6 +58,19 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, CreateGroupActivity.class));
         });
 
+        // Bottom Nav: Buka Profil Sendiri
+        findViewById(R.id.btnNavProfile).setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            intent.putExtra("uid", myUid);
+            startActivity(intent);
+        });
+        
+        // Bottom Nav: Buka Kontak / Pengaturan (sementara toast dulu)
+        findViewById(R.id.btnNavContacts).setOnClickListener(v -> 
+            Toast.makeText(this, "Kontak segera hadir", Toast.LENGTH_SHORT).show());
+        findViewById(R.id.btnNavSettings).setOnClickListener(v -> 
+            Toast.makeText(this, "Pengaturan segera hadir", Toast.LENGTH_SHORT).show());
+
         loadChats();
         loadGroups();
 
@@ -100,20 +113,47 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadChats() {
-        mDb.child("users").addValueEventListener(new ValueEventListener() {
+        // LOGIKA DIALOGSACTIVITY TELEGRAM:
+        // Hanya tampilkan room yang punya pesan terakhir.
+        mDb.child("chats").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 allUsers.clear();
                 userList.clear();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    String uid = data.getKey();
-                    if (uid != null && !uid.equals(myUid)) {
-                        String name = data.child("name").getValue(String.class);
-                        allUsers.add(new UserModel(uid, name, ""));
-                        userList.add(new UserModel(uid, name, ""));
-                    }
+                for (DataSnapshot room : snapshot.getChildren()) {
+                    String roomId = room.getKey();
+                    if (roomId == null || !roomId.contains("_")) continue;
+
+                    // Ambil uid lawan chat dari roomId (format: uidA_uidB)
+                    String[] parts = roomId.split("_");
+                    if (parts.length != 2) continue;
+                    String otherUid = parts[0].equals(myUid) ? parts[1] : parts[0];
+                    if (otherUid.equals(myUid)) continue;
+
+                    DataSnapshot messagesSnap = room.child("messages");
+                    if (!messagesSnap.exists() || messagesSnap.getChildrenCount() == 0) continue;
+
+                    // Ambil nama lawan chat dari users/
+                    // (callback async, jadi kita simpan sementara dan update di listener)
+                    final String fOtherUid = otherUid;
+                    mDb.child("users").child(otherUid).child("name")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override public void onDataChange(DataSnapshot nameSnap) {
+                                String name = nameSnap.getValue(String.class);
+                                UserModel u = new UserModel(fOtherUid, name != null ? name : "User", "");
+                                boolean exists = false;
+                                for (UserModel ex : allUsers) {
+                                    if (ex.getUid().equals(fOtherUid)) { exists = true; break; }
+                                }
+                                if (!exists) {
+                                    allUsers.add(u);
+                                    userList.add(u);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                            @Override public void onCancelled(DatabaseError error) {}
+                        });
                 }
-                adapter.notifyDataSetChanged();
             }
             @Override public void onCancelled(DatabaseError error) {}
         });

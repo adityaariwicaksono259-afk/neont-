@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
@@ -24,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // KEAMANAN: Cegah screenshot di halaman login
+        getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, 
+                             android.view.WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
@@ -52,19 +56,26 @@ public class MainActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String pass = etPassword.getText().toString().trim();
-            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) return;
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
+                Toast.makeText(this, "Isi email & password", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             ButtonHelper.showSpinner(btnLogin, spinner);
 
-            mAuth.signInWithEmailAndPassword(email, pass)
-                .addOnSuccessListener(a -> {
-                    startActivity(new Intent(this, HomeActivity.class));
+            AuthHelper.login(this, email, pass, new AuthHelper.AuthCallback() {
+                @Override
+                public void onSuccess(com.google.firebase.auth.FirebaseUser user) {
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
                     finish();
-                })
-                .addOnFailureListener(e -> {
+                }
+
+                @Override
+                public void onError(String message) {
                     ButtonHelper.hideSpinner(btnLogin, spinner, "MASUK");
-                    Toast.makeText(this, AuthHelper.getErrorMessage(e), Toast.LENGTH_SHORT).show();
-                });
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         tvGoToRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));

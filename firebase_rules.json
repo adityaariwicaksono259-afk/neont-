@@ -4,9 +4,17 @@
       "$uid": {
         ".read": "auth != null",
         ".write": "$uid === auth.uid",
-        "username": { ".validate": "newData.isString() && newData.val().length <= 25" },
-        "name": { ".validate": "newData.isString() && newData.val().length <= 50" }
-      }
+        "username": {
+          ".validate": "newData.isString() && newData.val().length <= 25"
+        },
+        "name": {
+          ".validate": "newData.isString() && newData.val().length <= 50"
+        }
+      },
+      ".indexOn": [
+        "username",
+        "name"
+      ]
     },
     "usernames": {
       "$username": {
@@ -19,9 +27,15 @@
         ".read": "auth != null",
         ".write": "auth != null",
         "$messageId": {
-          "text": { ".validate": "newData.isString() && newData.val().length <= 4000" },
-          "senderId": { ".validate": "newData.val() === auth.uid" },
-          "timestamp": { ".validate": "newData.isNumber()" }
+          "text": {
+            ".validate": "newData.isString() && newData.val().length <= 4000"
+          },
+          "senderId": {
+            ".validate": "newData.val() === auth.uid"
+          },
+          "timestamp": {
+            ".validate": "newData.isNumber()"
+          }
         }
       }
     },

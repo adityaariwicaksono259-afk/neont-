@@ -69,7 +69,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         // LOGIKA TELEGRAM: Baca pesan terakhir (preview)
         String roomId = (myUid.compareTo(user.getUid()) < 0) ? myUid + "_" + user.getUid() : user.getUid() + "_" + myUid;
-        mDb.child("chats").child(roomId).orderByChild("timestamp").limitToLast(1).addValueEventListener(new ValueEventListener() {
+        mDb.child("chats").child(roomId).child("messages").orderByChild("timestamp").limitToLast(1).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
