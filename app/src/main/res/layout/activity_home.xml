@@ -14,7 +14,7 @@
             android:src="@android:drawable/ic_menu_more" app:tint="@color/tg_text_gray"/>
     </LinearLayout>
 
-    <!-- Search Bar (Kecil) -->
+    <!-- Search Bar -->
     <LinearLayout android:id="@+id/layoutSearch" android:layout_width="match_parent" android:layout_height="40dp"
         android:background="@drawable/bg_search_telegram" android:orientation="horizontal"
         android:gravity="center_vertical" android:paddingStart="12dp" android:paddingEnd="12dp"
@@ -30,16 +30,19 @@
             android:importantForAutofill="no" android:focusable="false"/>
     </LinearLayout>
 
-    <!-- Tab "Semua Obrolan" & "Neon Combo X" -->
+    <!-- Tab Filter: All, Unread, Neon Combo X -->
     <LinearLayout android:id="@+id/layoutTabs" android:layout_width="match_parent" android:layout_height="36dp"
         android:orientation="horizontal" android:layout_marginStart="16dp" android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/layoutSearch">
 
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-            android:text="Semua Obrolan" android:gravity="center" android:textColor="@color/tg_blue"
+        <TextView android:id="@+id/tabAll" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:text="All" android:gravity="center" android:textColor="@color/tg_blue"
             android:textStyle="bold" android:textSize="14sp" android:background="@drawable/bg_tab_active"/>
 
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+        <TextView android:id="@+id/tabUnread" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:text="Unread" android:gravity="center" android:textColor="@color/tg_text_gray" android:textSize="14sp"/>
+
+        <TextView android:id="@+id/tabNeon" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
             android:text="Neon Combo X" android:gravity="center" android:textColor="@color/tg_text_gray" android:textSize="14sp"/>
     </LinearLayout>
 
@@ -50,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/layoutTabs"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"/>
 
-    <!-- BOTTOM NAV (Pake LinearLayout Biasa) -->
+    <!-- Bottom Nav (Cuma 1) -->
     <LinearLayout android:id="@+id/bottomNav" android:layout_width="match_parent" android:layout_height="60dp"
         android:background="@color/tg_bg" android:elevation="8dp" android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -75,4 +78,12 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
         </LinearLayout>
     </LinearLayout>
+
+    <!-- Badge (tvBadge) -->
+    <TextView android:id="@+id/tvBadge" android:layout_width="20dp" android:layout_height="20dp"
+        android:background="@drawable/bg_badge" android:text="0" android:textColor="#FFFFFF"
+        android:textSize="10sp" android:textStyle="bold" android:gravity="center"
+        android:visibility="gone" app:layout_constraintTop_toTopOf="@id/bottomNav"
+        app:layout_constraintBottom_toBottomOf="@id/bottomNav" app:layout_constraintStart_toStartOf="@id/bottomNav"
+        app:layout_constraintEnd_toStartOf="@id/bottomNav" app:layout_constraintHorizontal_bias="0.12" android:layout_marginTop="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
