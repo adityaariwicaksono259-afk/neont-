@@ -73,6 +73,7 @@ public class D1Helper {
 
     /** Get user berdasarkan Firebase UID. */
     public static void getUser(String firebaseUid, UserCallback cb) {
+        if (cb == null) return; // Cegah NPE
         if (firebaseUid == null || firebaseUid.isEmpty()) {
             cb.onError("firebaseUid kosong");
             return;
@@ -136,7 +137,9 @@ public class D1Helper {
     private static void enqueue(Request req, UserCallback cb) {
         client.newCall(req).enqueue(new Callback() {
             @Override public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                mainHandler.post(() -> cb.onError("Network error: " + e.getMessage()));
+                mainHandler.post(() -> {
+                    if (cb != null) cb.onError("Network error: " + e.getMessage());
+                });
             }
 
             @Override public void onResponse(@NonNull Call call, @NonNull Response res) throws IOException {
@@ -174,6 +177,13 @@ public class D1Helper {
         if (firebaseUid == null || firebaseUid.isEmpty()) {
             if (cb != null) cb.onError("firebaseUid kosong");
             return;
+        }
+        if (cb == null) {
+            // Jika cb null, kita buat callback dummy agar tidak crash
+            cb = new UserCallback() {
+                @Override public void onSuccess(org.json.JSONObject user) {}
+                @Override public void onError(String message) {}
+            };
         }
         try {
             JSONObject body = new JSONObject();

@@ -136,7 +136,10 @@ public class AuthHelper {
                     D1Helper.createUser(user.getUid(), safeName(user), new D1Helper.UserCallback() {
                         @Override public void onSuccess(org.json.JSONObject u) {
                             // Catat login terakhir (async, tidak blocking)
-                            D1Helper.recordLastLogin(user.getUid(), getDeviceId(appCtx), null);
+                            D1Helper.recordLastLogin(user.getUid(), getDeviceId(appCtx), new D1Helper.UserCallback() {
+                                @Override public void onSuccess(org.json.JSONObject u) {}
+                                @Override public void onError(String msg) {}
+                            });
                             cb.onSuccess(user);
                         }
                         @Override public void onError(String message) {
