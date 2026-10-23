@@ -4,93 +4,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tg_bg">
+    android:background="#F2F2F7">
 
-    <!-- Area Utama (Header, Search, Tabs, List) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Header -->
-        <LinearLayout android:id="@+id/headerHome" android:elevation="2dp" android:background="#FFFFFF" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical">
+        <!-- Header iOS -->
+        <LinearLayout android:id="@+id/headerHome" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical"
+            android:background="#FFFFFF" android:elevation="0.5dp">
             <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                android:text="NEONT" android:textColor="@color/tg_blue" android:textSize="20sp" android:textStyle="bold"/>
+                android:text="Obrolan" android:textColor="#000000" android:textSize="22sp" android:textStyle="bold" android:fontFamily="sans-serif-medium"/>
             <ImageView android:id="@+id/btnMenuTop" android:layout_width="24dp" android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_more" app:tint="@color/tg_text_gray"/>
+                android:src="@android:drawable/ic_menu_more" app:tint="#007AFF"/>
         </LinearLayout>
 
-        <!-- Search Bar -->
+        <!-- Search Bar iOS -->
         <LinearLayout android:id="@+id/layoutSearch" android:layout_width="match_parent" android:layout_height="36dp"
-            android:background="@drawable/bg_search_telegram" android:orientation="horizontal"
+            android:background="@drawable/bg_ios_search" android:orientation="horizontal"
             android:gravity="center_vertical" android:paddingStart="12dp" android:paddingEnd="12dp"
-            android:layout_marginStart="16dp" android:layout_marginEnd="16dp" android:layout_marginTop="8dp">
+            android:layout_marginStart="16dp" android:layout_marginEnd="16dp" android:layout_marginTop="8dp" android:layout_marginBottom="8dp">
 
-            <ImageView android:layout_width="18dp" android:layout_height="18dp"
-                android:src="@android:drawable/ic_menu_search" app:tint="@color/tg_text_gray"/>
-
+            <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                android:src="@android:drawable/ic_menu_search" app:tint="#8E8E93"/>
             <EditText android:id="@+id/etSearchHome" android:layout_width="0dp" android:layout_height="match_parent"
-                android:layout_weight="1" android:hint="Cari Obrolan" android:background="@android:color/transparent"
-                android:paddingStart="8dp" android:textColor="@color/tg_text" android:textSize="13sp" android:inputType="text"
-                android:importantForAutofill="no" android:focusable="false"/>
-        </LinearLayout>
-
-        <!-- Tab Filter -->
-        <LinearLayout android:id="@+id/layoutTabs" android:layout_width="match_parent" android:layout_height="32dp"
-            android:orientation="horizontal" android:layout_marginStart="16dp" android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp">
-
-            <TextView android:id="@+id/tabAll" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                android:text="All" android:gravity="center" android:textColor="@color/tg_blue"
-                android:textStyle="bold" android:textSize="13sp" android:background="@drawable/bg_tab_active"/>
-
-            <TextView android:id="@+id/tabUnread" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                android:text="Unread" android:gravity="center" android:textColor="@color/tg_text_gray" android:textSize="13sp"/>
-
-            <TextView android:id="@+id/tabNeon" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                android:text="Neon Combo X" android:gravity="center" android:textColor="@color/tg_text_gray" android:textSize="13sp"/>
+                android:layout_weight="1" android:hint="Cari" android:background="@android:color/transparent"
+                android:paddingStart="8dp" android:textColor="#000000" android:textSize="16sp" android:inputType="text"
+                android:focusable="false"/>
         </LinearLayout>
 
         <!-- List Chat -->
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvChats"
-            android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
-            android:layout_marginTop="8dp" />
+            android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
     </LinearLayout>
 
-    <!-- Bottom Nav (Dikunci di bawah pakai CoordinatorLayout) -->
+    <!-- Bottom Nav iOS -->
     <LinearLayout android:id="@+id/bottomNav" android:layout_width="match_parent" android:layout_height="56dp"
-        android:background="@color/tg_bg" android:elevation="8dp" android:orientation="horizontal"
+        android:background="#F9F9F9" android:elevation="0.5dp" android:orientation="horizontal"
         android:layout_gravity="bottom">
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:id="@+id/btnNavChat" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="@color/tg_blue"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Obrolan" android:textSize="10sp" android:textColor="@color/tg_blue"/>
+            <ImageView android:id="@+id/btnNavChat" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_chat" app:tint="#007AFF"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Obrolan" android:textSize="10sp" android:textColor="#007AFF"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:id="@+id/btnNavContacts" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kontak" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
+            <ImageView android:id="@+id/btnNavContacts" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="#8E8E93"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kontak" android:textSize="10sp" android:textColor="#8E8E93"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:id="@+id/btnNavSettings" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="@color/tg_text_gray"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pengaturan" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
+            <ImageView android:id="@+id/btnNavSettings" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_status" app:tint="#8E8E93"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pengaturan" android:textSize="10sp" android:textColor="#8E8E93"/>
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="?attr/selectableItemBackground">
-            <ImageView android:id="@+id/btnNavProfile" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="@color/tg_text_gray"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="@color/tg_text_gray"/>
+            <ImageView android:id="@+id/btnNavProfile" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_wa_profile" app:tint="#8E8E93"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profil" android:textSize="10sp" android:textColor="#8E8E93"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Badge (tvBadge) -->
     <TextView android:id="@+id/tvBadge" android:layout_width="20dp" android:layout_height="20dp"
         android:background="@drawable/bg_badge" android:text="0" android:textColor="#FFFFFF"
         android:textSize="10sp" android:textStyle="bold" android:gravity="center"
         android:visibility="gone"
-        android:layout_gravity="bottom|start"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="32dp"/>
+        android:layout_gravity="bottom|start" android:layout_marginStart="24dp" android:layout_marginBottom="32dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

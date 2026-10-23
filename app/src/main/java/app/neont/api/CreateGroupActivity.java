@@ -48,6 +48,15 @@ public class CreateGroupActivity extends AppCompatActivity {
         loadContacts();
 
         findViewById(R.id.btnCreateGroup).setOnClickListener(v -> createGroup());
+
+        // Aktifkan tombol Buat jika nama grup diisi
+        etGroupName.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                findViewById(R.id.btnCreateGroup).setEnabled(s.toString().trim().length() > 0);
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
     private void loadContacts() {

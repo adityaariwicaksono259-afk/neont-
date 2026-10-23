@@ -31,7 +31,7 @@ public class NeontApp extends Application {
         });
 
         // Inisialisasi Emoji2
-        EmojiCompat.Config config = DefaultEmojiCompatConfig.create(this);
+        EmojiCompat.Config config = com.vanniktech.emoji.ios.IOSEmojiCompatConfig.create(this);
         if (config != null) {
             config.setReplaceAll(true);
             EmojiCompat.init(config);

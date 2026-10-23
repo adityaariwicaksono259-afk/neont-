@@ -78,6 +78,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         // ✅ FIX: path sesuai firebase_rules.json
         messagesRef = mDb.child("chats").child(roomId).child("messages");
 
+        findViewById(R.id.btnBackChat).setOnClickListener(v -> finish());
+
         findViewById(R.id.headerChat).setOnClickListener(v -> {
             Intent intent = new Intent(this, UserProfileActivity.class);
             intent.putExtra("uid", receiverId);
@@ -213,6 +215,14 @@ public class ChatRoomActivity extends AppCompatActivity {
                                 timestamp != null ? timestamp : 0,
                                 status != null ? status : "sent",
                                 replyTo, mediaUrl, reactions));
+                        
+                        // NOTIFIKASI: Jika pesan dari orang lain dan belum dibaca
+                        if (!sender.equals(senderId) && (status == null || !"read".equals(status))) {
+                            String senderName = data.child("senderName").getValue(String.class);
+                            NotificationHelper.showNotification(ChatRoomActivity.this, 
+                                senderName != null ? senderName : "Pesan Baru", 
+                                text, roomId, senderName != null ? senderName : "User");
+                        }
                         // Tandai "read" kalau pesan orang lain dibuka
                         if (!sender.equals(senderId) && (status == null || !"read".equals(status))) {
                             data.getRef().child("status").setValue("read");

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F5">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,94 +15,87 @@
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher"
-            android:layout_marginTop="48dp"
+            android:src="@drawable/ic_neont_logo"
+            android:layout_marginTop="64dp"
             android:layout_marginBottom="32dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Selamat Datang di NEONT"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
             android:textColor="#000000"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="32dp"/>
 
-        <com.google.android.material.card.MaterialCardView
+        <!-- Input Email -->
+        <EditText
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            android:layout_height="52dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:importantForAutofill="no"
+            android:background="@drawable/bg_ios_input"
+            android:layout_marginBottom="12dp"/>
 
-            <LinearLayout
+        <!-- Input Password -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="24dp">
+
+            <EditText
+                android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:importantForAutofill="no"
+                android:background="@drawable/bg_ios_input"/>
 
-                <EditText
-                    android:id="@+id/etEmail" android:importantForAutofill="no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    android:padding="12dp"
-                    android:background="@drawable/bg_search_telegram"
-                    android:layout_marginBottom="12dp"/>
+            <ImageView
+                android:id="@+id/ivTogglePass"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_eye_open"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                app:tint="#C7C7CC"/>
+        </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Masuk"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp"
+            android:backgroundTint="#007AFF"
+            android:textColor="#FFFFFF"/>
 
-                    <EditText
-                        android:id="@+id/etPassword" android:importantForAutofill="no"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password"
-                        android:inputType="textPassword"
-                        android:padding="12dp"
-                        android:paddingEnd="40dp"
-                        android:background="@drawable/bg_search_telegram"/>
+        <ProgressBar
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"/>
 
-                    <ImageView
-                        android:id="@+id/ivTogglePass"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_view"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="12dp"
-                        app:tint="#8E8E93"/>
-                </RelativeLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="MASUK"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="#007AFF"
-                    android:textColor="#FFFFFF"/>
-
-                <ProgressBar
-                    android:id="@+id/spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"/>
-
-                <TextView
-                    android:id="@+id/tvGoToRegister"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Belum punya akun? Daftar"
-                    android:textColor="#007AFF"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="16dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/tvGoToRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belum punya akun? Daftar"
+            android:textColor="#007AFF"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"/>
     </LinearLayout>
 </ScrollView>

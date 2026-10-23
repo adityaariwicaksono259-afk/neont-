@@ -4,99 +4,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F0F2F5">
+    android:background="#F2F2F7">
 
-    <!-- Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#FFFFFF"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:elevation="2dp">
-        <ImageView
-            android:id="@+id/btnBackSettings"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            app:tint="#000000"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pengaturan"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginStart="16dp"/>
+    <!-- Header iOS -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+        android:background="#FFFFFF" android:gravity="center_vertical"
+        android:paddingStart="16dp" android:paddingEnd="16dp" android:elevation="0.5dp">
+        <TextView android:id="@+id/btnBackSettings" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Kembali" android:textColor="#007AFF" android:textSize="17sp"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Pengaturan" android:textSize="17sp" android:textStyle="bold" android:textColor="#000000" android:gravity="center"/>
+        <View android:layout_width="60dp" android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            <!-- Card 1: Privasi -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="#FFFFFF" android:layout_marginBottom="24dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="PRIVASI" android:textSize="13sp" android:textColor="#8E8E93" android:padding="16dp"/>
+                
+                <LinearLayout android:id="@+id/rowAkun" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="?attr/selectableItemBackground">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Akun" android:textSize="17sp" android:textColor="#000000"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#C6C6C8" android:layout_marginStart="16dp"/>
 
-            <!-- Card 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Akun" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/rowAkun" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Nomor, Username, Bio" android:paddingVertical="12dp"/>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Privasi &amp; Keamanan" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/rowPrivacy" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Terakhir Terlihat, Perangkat, Passcode" android:paddingVertical="12dp"/>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Notifikasi" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/rowNotif" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Suara, Panggilan, Emblem" android:paddingVertical="12dp"/>
+                <LinearLayout android:id="@+id/rowPrivacy" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_privacy" android:layout_marginEnd="16dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Privasi &amp; Keamanan" android:textSize="17sp" android:textColor="#000000"/>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Card 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
+            <!-- Card 2: Notifikasi & Data -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="#FFFFFF" android:layout_marginBottom="24dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="PENGATURAN" android:textSize="13sp" android:textColor="#8E8E93" android:padding="16dp"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Data dan Penyimpanan" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/rowData" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Pengaturan pengunduhan media" android:paddingVertical="12dp"/>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
+                <LinearLayout android:id="@+id/rowNotif" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="?attr/selectableItemBackground">
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_notification" android:layout_marginEnd="16dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Notifikasi" android:textSize="17sp" android:textColor="#000000"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#C6C6C8" android:layout_marginStart="56dp"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Folder Obrolan" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/rowFolder" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Sortir obrolan ke dalam folder" android:paddingVertical="12dp"/>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
+                <LinearLayout android:id="@+id/rowFolder" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="?attr/selectableItemBackground">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Folder Obrolan" android:textSize="17sp" android:textColor="#000000"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#C6C6C8" android:layout_marginStart="16dp"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perangkat" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/rowDevice" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Kelola perangkat terhubung" android:paddingVertical="12dp"/>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Penghematan Daya" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Kurangi penggunaan daya saat baterai rendah" android:paddingVertical="12dp"/>
+                <LinearLayout android:id="@+id/rowData" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="?attr/selectableItemBackground">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Data dan Penyimpanan" android:textSize="17sp" android:textColor="#000000"/>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Card 3 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bahasa" android:textColor="#007AFF" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Bahasa Indonesia" android:paddingVertical="12dp"/>
+            <!-- Card 3: Perangkat -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="#FFFFFF">
+                <LinearLayout android:id="@+id/rowDevice" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="?attr/selectableItemBackground">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perangkat" android:textSize="17sp" android:textColor="#000000"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

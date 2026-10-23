@@ -150,4 +150,21 @@ public class UserProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "Izin galeri ditolak", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data profil dari D1 saat kembali dari Edit
+        if (targetUid != null) {
+            D1Helper.getUser(targetUid, new D1Helper.UserCallback() {
+                @Override public void onSuccess(org.json.JSONObject user) {
+                    String name = user.optString("display_name", "User");
+                    String username = user.optString("username", "");
+                    tvName.setText(name.isEmpty() ? "User" : name);
+                    tvUsername.setText(username.isEmpty() ? "@user" : "@" + username);
+                }
+                @Override public void onError(String message) {}
+            });
+        }
+    }
 }
