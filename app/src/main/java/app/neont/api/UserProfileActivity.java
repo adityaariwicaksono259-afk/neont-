@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import com.bumptech.glide.Glide;
 
 public class UserProfileActivity extends AppCompatActivity {
-    private TextView tvName, tvUsername;
+    private TextView tvName, tvUsername, tvStatus;
     private ImageView ivPhoto;
     private String targetUid, myUid;
     private boolean isSelf = false;
@@ -27,6 +27,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         tvName = findViewById(R.id.tvUserName);
         tvUsername = findViewById(R.id.tvUserUsername);
+        tvStatus = findViewById(R.id.tvStatus);
         ivPhoto = findViewById(R.id.ivUserPhoto);
         myUid = FirebaseAuth.getInstance().getUid();
         targetUid = getIntent().getStringExtra("uid");

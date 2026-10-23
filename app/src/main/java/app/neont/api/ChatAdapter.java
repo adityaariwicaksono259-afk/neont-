@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,6 +86,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                             String decryptRoomId = roomId;
                             String decryptedText = CryptoHelper.decrypt(text, decryptRoomId);
                             holder.tvPreview.setText(decryptedText);
+                        user.setPreview(decryptedText); // Simpan untuk search
                         } else {
                             holder.tvPreview.setText("Klik untuk mulai chat");
                         }

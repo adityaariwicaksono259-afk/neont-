@@ -187,7 +187,9 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             String lower = keyword.toLowerCase().trim();
             for (UserModel u : allUsers) {
-                if (u.getName() != null && u.getName().toLowerCase().contains(lower)) {
+                boolean matchName = u.getName() != null && u.getName().toLowerCase().contains(lower);
+                boolean matchPreview = u.getPreview() != null && u.getPreview().toLowerCase().contains(lower);
+                if (matchName || matchPreview) {
                     userList.add(u);
                 }
             }

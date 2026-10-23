@@ -67,7 +67,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.layoutReaction.setVisibility(LinearLayout.VISIBLE);
                 StringBuilder emojiText = new StringBuilder();
                 for (Map.Entry<String, Map<String, Boolean>> entry : message.getReactions().entrySet()) {
-                    emojiText.append(entry.getKey()).append(entry.getValue().size()).append(" ");
+                    emojiText.append(entry.getKey());
+                    if (entry.getValue().size() > 1) {
+                        emojiText.append(" ").append(entry.getValue().size());
+                    }
+                    emojiText.append(" ");
                 }
                 if (holder.tvReaction != null) holder.tvReaction.setText(emojiText.toString());
                 

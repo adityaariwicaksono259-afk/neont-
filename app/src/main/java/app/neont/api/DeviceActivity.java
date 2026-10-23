@@ -21,10 +21,11 @@ public class DeviceActivity extends AppCompatActivity {
         String abi = (Build.SUPPORTED_ABIS.length > 0) ? Build.SUPPORTED_ABIS[0] : "Unknown";
 
         tvDevice.setText(deviceName);
-        tvOs.setText(osVersion + "\nABI: " + abi + "\nDevice ID: " + getDeviceId());
+        tvOs.setText(osVersion + "\nABI: " + abi + "\nDevice ID: " + getMyDeviceId());
     }
 
-    private String getDeviceId() {
+    // Ganti nama dari getDeviceId() -> getMyDeviceId() agar tidak bentrok
+    private String getMyDeviceId() {
         try {
             return android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
         } catch (Exception e) {
