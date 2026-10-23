@@ -49,8 +49,8 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         // Setup Tombol Aksi (Self vs Other)
-        LinearLayout layoutSelf = findViewById(R.id.layoutSelfActions);
-        LinearLayout layoutSettings = findViewById(R.id.layoutSettingsList);
+        View layoutSelf = findViewById(R.id.layoutSelfActions);
+        View layoutSettings = findViewById(R.id.layoutSettingsList);
         Button btnMessage = findViewById(R.id.btnMessageUser);
 
         if (isSelf) {
