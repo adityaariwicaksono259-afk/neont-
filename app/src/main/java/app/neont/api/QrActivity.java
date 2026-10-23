@@ -16,6 +16,10 @@ public class QrActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qr);
 
         String link = getIntent().getStringExtra("link");
+        if (link == null) {
+            finish();
+            return;
+        }
         ImageView ivQr = findViewById(R.id.ivQrCode);
         TextView tvLink = findViewById(R.id.tvQrLink);
 

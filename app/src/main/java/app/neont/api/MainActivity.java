@@ -69,21 +69,27 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(com.google.firebase.auth.FirebaseUser user) {
                     // Cek D1 apakah username sudah ada
-                    D1Helper.getUser(user.getUid(), new D1Helper.UserCallback() {
-                        @Override public void onSuccess(org.json.JSONObject u) {
-                            String username = u.optString("username", "");
-                            if (username.isEmpty() || username.equals("null")) {
-                                startActivity(new Intent(MainActivity.this, UsernameActivity.class));
-                            } else {
-                                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                    try {
+                        D1Helper.getUser(user.getUid(), new D1Helper.UserCallback() {
+                            @Override public void onSuccess(org.json.JSONObject u) {
+                                String username = (u != null) ? u.optString("username", "") : "";
+                                if (username.isEmpty() || username.equals("null")) {
+                                    startActivity(new Intent(MainActivity.this, UsernameActivity.class));
+                                } else {
+                                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                }
+                                finish();
                             }
-                            finish();
-                        }
-                        @Override public void onError(String message) {
-                            startActivity(new Intent(MainActivity.this, UsernameActivity.class));
-                            finish();
-                        }
-                    });
+                            @Override public void onError(String message) {
+                                startActivity(new Intent(MainActivity.this, UsernameActivity.class));
+                                finish();
+                            }
+                        });
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "Error D1: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(MainActivity.this, UsernameActivity.class));
+                        finish();
+                    }
                 }
 
                 @Override

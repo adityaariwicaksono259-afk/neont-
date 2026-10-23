@@ -127,6 +127,11 @@ public class AuthHelper {
                         cb.onError("Login sukses tapi user null.");
                         return;
                     }
+                    // Pastikan UID tidak null
+                    if (user.getUid() == null) {
+                        cb.onError("UID kosong.");
+                        return;
+                    }
                     // Sinkronisasi ke D1 (create jika belum ada, idempotent)
                     D1Helper.createUser(user.getUid(), safeName(user), new D1Helper.UserCallback() {
                         @Override public void onSuccess(org.json.JSONObject u) {

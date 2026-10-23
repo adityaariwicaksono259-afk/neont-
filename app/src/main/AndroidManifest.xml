@@ -34,6 +34,7 @@
         
         <activity android:name=".UserProfileActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".CrashActivity" android:exported="false" />
         <activity android:name=".DeviceActivity" android:exported="false" />
         <activity android:name=".EditProfileActivity" android:exported="false" />
         <activity android:name=".PrivacyActivity" android:exported="false" />

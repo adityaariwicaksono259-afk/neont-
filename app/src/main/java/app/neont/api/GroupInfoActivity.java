@@ -21,6 +21,11 @@ public class GroupInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_info);
         mDb = FirebaseDatabase.getInstance().getReference();
         groupId = getIntent().getStringExtra("groupId");
+        if (groupId == null) {
+            // Jika tidak ada groupId, tutup activity (mencegah crash)
+            finish();
+            return;
+        }
 
         TextView tvName = findViewById(R.id.tvGroupName);
         TextView tvDesc = findViewById(R.id.tvGroupDesc);

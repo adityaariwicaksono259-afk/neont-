@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aplikasi Terhenti (FC)"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#D32F2F"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Error..."
+        android:textSize="14sp"
+        android:textColor="#000000"
+        android:fontFamily="monospace"
+        android:padding="16dp"
+        android:background="#F0F2F5"/>
+
+    <Button
+        android:id="@+id/btnCloseCrash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tutup"
+        android:layout_marginTop="24dp"/>
+</LinearLayout>
