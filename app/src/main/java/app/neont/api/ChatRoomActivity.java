@@ -126,6 +126,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         });
 
         loadPesan();
+        
+        // Load wallpaper yang tersimpan
+        int savedColor = getSharedPreferences("neont_wallpaper", MODE_PRIVATE).getInt("wall_" + roomId, 0xFFFFFFFF);
+        findViewById(android.R.id.content).setBackgroundColor(savedColor);
     }
 
     private void showMessageMenu(MessageModel message) {
@@ -147,7 +151,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                     Toast.makeText(this, "Disalin!", Toast.LENGTH_SHORT).show();
                 } else if (which == 4) {
                     // Forward (Teruskan)
-                    Toast.makeText(this, "Pilih chat tujuan (segera hadir)", Toast.LENGTH_SHORT).show();
+                    showForwardDialog(message.getText());
                 } else if (which == 5) {
                     // Ganti Wallpaper
                     showWallpaperDialog();
@@ -242,7 +246,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
             @Override public void onCancelled(DatabaseError error) {}
         };
-        messagesRef.orderByChild("timestamp").addValueEventListener(messageListener);
+        messagesRef.orderByChild("timestamp").limitToLast(50).addValueEventListener(messageListener);
     }
 
     @Override
@@ -264,7 +268,56 @@ public class ChatRoomActivity extends AppCompatActivity {
                 
                 View root = findViewById(android.R.id.content);
                 root.setBackgroundColor(color);
+                
+                // Simpan preferensi wallpaper untuk room ini
+                getSharedPreferences("neont_wallpaper", MODE_PRIVATE).edit()
+                    .putInt("wall_" + roomId, color).apply();
+                    
                 Toast.makeText(this, "Wallpaper diganti", Toast.LENGTH_SHORT).show();
             }).show();
+    }
+
+    private void showForwardDialog(String text) {
+        // Ambil daftar user dari Firebase untuk dipilih
+        com.google.firebase.database.FirebaseDatabase.getInstance().getReference().child("users")
+            .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                @Override public void onDataChange(com.google.firebase.database.DataSnapshot snapshot) {
+                    java.util.List<String> names = new java.util.ArrayList<>();
+                    java.util.List<String> uids = new java.util.ArrayList<>();
+                    for (com.google.firebase.database.DataSnapshot data : snapshot.getChildren()) {
+                        String uid = data.getKey();
+                        String name = data.child("name").getValue(String.class);
+                        if (uid != null && !uid.equals(senderId)) {
+                            names.add(name != null ? name : "User");
+                            uids.add(uid);
+                        }
+                    }
+                    
+                    if (names.isEmpty()) {
+                        Toast.makeText(ChatRoomActivity.this, "Tidak ada chat lain", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    String[] arrNames = names.toArray(new String[0]);
+                    new AlertDialog.Builder(ChatRoomActivity.this)
+                        .setTitle("Teruskan ke...")
+                        .setItems(arrNames, (dialog, which) -> {
+                            String targetUid = uids.get(which);
+                            // Kirim pesan ke chat tujuan
+                            String forwardRoomId = (senderId.compareTo(targetUid) < 0) ? senderId + "_" + targetUid : targetUid + "_" + senderId;
+                            
+                            java.util.Map<String, Object> forwardData = new java.util.HashMap<>();
+                            forwardData.put("senderId", senderId);
+                            forwardData.put("text", CryptoHelper.encrypt(text, forwardRoomId));
+                            forwardData.put("timestamp", ServerValue.TIMESTAMP);
+                            forwardData.put("status", "sent");
+                            
+                            mDb.child("chats").child(forwardRoomId).child("messages").push().setValue(forwardData)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(ChatRoomActivity.this, "Pesan diteruskan", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e -> Toast.makeText(ChatRoomActivity.this, "Gagal meneruskan", Toast.LENGTH_SHORT).show());
+                        }).show();
+                }
+                @Override public void onCancelled(com.google.firebase.database.DatabaseError error) {}
+            });
     }
 }

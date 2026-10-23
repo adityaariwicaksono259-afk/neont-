@@ -79,7 +79,10 @@ public class HomeActivity extends AppCompatActivity {
         rvChats.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override public void onScrolled(RecyclerView rv, int dx, int dy) {
                 if (!rv.canScrollVertically(1)) { // Di paling bawah
-                    // Load 50 lagi (nanti kita implementasi)
+                    if (loadLimit < 500) { // Batas maksimal 500 chat
+                        loadLimit += 50;
+                        loadChats(); // Muat ulang dengan limit baru
+                    }
                 }
             }
         });
@@ -182,8 +185,11 @@ public class HomeActivity extends AppCompatActivity {
         if (keyword.isEmpty()) {
             userList.addAll(allUsers);
         } else {
+            String lower = keyword.toLowerCase().trim();
             for (UserModel u : allUsers) {
-                if (u.getName() != null && u.getName().toLowerCase().contains(keyword.toLowerCase())) { userList.add(u); }
+                if (u.getName() != null && u.getName().toLowerCase().contains(lower)) {
+                    userList.add(u);
+                }
             }
         }
         adapter.notifyDataSetChanged();

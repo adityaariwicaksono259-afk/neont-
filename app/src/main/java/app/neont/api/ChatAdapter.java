@@ -115,6 +115,25 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onUserClick(user);
         });
+        
+        // Long-press untuk pindahkan ke folder
+        holder.itemView.setOnLongClickListener(v -> {
+            String[] folders = {"Kerja", "Keluarga", "Teman", "Hapus dari Folder"};
+            new android.app.AlertDialog.Builder(context)
+                .setTitle("Pindahkan ke Folder")
+                .setItems(folders, (dialog, which) -> {
+                    android.content.SharedPreferences prefs = context.getSharedPreferences("neont_chat_folders", android.content.Context.MODE_PRIVATE);
+                    if (which == 3) {
+                        prefs.edit().remove("chat_" + user.getUid()).apply();
+                        android.widget.Toast.makeText(context, "Dihapus dari folder", android.widget.Toast.LENGTH_SHORT).show();
+                    } else {
+                        prefs.edit().putString("chat_" + user.getUid(), folders[which]).apply();
+                        android.widget.Toast.makeText(context, "Dipindahkan ke " + folders[which], android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+            return true;
+        });
     }
 
     @Override

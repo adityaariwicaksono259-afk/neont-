@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F2F7">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+        android:background="#FFFFFF" android:gravity="center_vertical"
+        android:paddingStart="16dp" android:paddingEnd="16dp">
+        <TextView android:id="@+id/btnBackNotif" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Kembali" android:textColor="#007AFF" android:textSize="17sp"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Notifikasi" android:textSize="17sp" android:textStyle="bold" android:textColor="#000000" android:gravity="center"/>
+        <View android:layout_width="60dp" android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="#FFFFFF" android:padding="16dp" android:layout_marginTop="16dp">
+        
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Terima Semua Notifikasi" android:textSize="17sp" android:textColor="#000000" android:paddingVertical="12dp" android:id="@+id/btnAllNotif"/>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#C6C6C8"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Silent (Getar Mati)" android:textSize="17sp" android:textColor="#000000" android:paddingVertical="12dp" android:id="@+id/btnSilentNotif"/>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#C6C6C8"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Blokir Semua" android:textSize="17sp" android:textColor="#000000" android:paddingVertical="12dp" android:id="@+id/btnBlockNotif"/>
+    </LinearLayout>
+</LinearLayout>

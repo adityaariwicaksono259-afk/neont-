@@ -32,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
+        // CEK: Jika sudah login, langsung ke Home (Jangan minta login ulang)
+        if (mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
+            return;
+        }
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);

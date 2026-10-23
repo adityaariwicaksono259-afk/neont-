@@ -9,6 +9,11 @@ public class NeontApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        
+        // Aktifkan Offline Persistence (Firebase)
+        // Ini memungkinkan chat dibaca saat offline, dan dikirim saat online
+        com.google.firebase.database.FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        
 
         // Tangkap error global (CCTV) - untuk debugging
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {

@@ -33,6 +33,9 @@
         <activity android:name=".ChatRoomActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         
         <activity android:name=".UserProfileActivity" android:exported="false" />
+        <activity android:name=".FolderActivity" android:exported="false" />
+        <activity android:name=".DataActivity" android:exported="false" />
+        <activity android:name=".NotificationActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".CrashActivity" android:exported="false" />
         <activity android:name=".DeviceActivity" android:exported="false" />

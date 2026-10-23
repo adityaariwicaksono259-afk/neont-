@@ -60,7 +60,6 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void loadContacts() {
-        // Ambil semua user dari Firebase (kecuali diri sendiri)
         com.google.firebase.database.FirebaseDatabase.getInstance().getReference().child("users")
             .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
                 @Override
@@ -70,8 +69,12 @@ public class CreateGroupActivity extends AppCompatActivity {
                         String uid = data.getKey();
                         if (uid != null && !uid.equals(mAuth.getUid())) {
                             String name = data.child("name").getValue(String.class);
+                            if (name == null) name = "User";
                             contactList.add(new UserModel(uid, name, ""));
                         }
+                    }
+                    if (contactList.isEmpty()) {
+                        contactList.add(new UserModel("dummy", "Belum ada kontak", ""));
                     }
                     adapter.notifyDataSetChanged();
                 }

@@ -12,11 +12,23 @@ public class DeviceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_device);
 
         findViewById(R.id.btnBackDevice).setOnClickListener(v -> finish());
-        
+
         TextView tvDevice = findViewById(R.id.tvDeviceName);
         TextView tvOs = findViewById(R.id.tvDeviceOs);
 
-        tvDevice.setText("Perangkat ini: " + Build.MANUFACTURER + " " + Build.MODEL);
-        tvOs.setText("Android " + Build.VERSION.RELEASE);
+        String deviceName = Build.MANUFACTURER + " " + Build.MODEL;
+        String osVersion = "Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")";
+        String abi = (Build.SUPPORTED_ABIS.length > 0) ? Build.SUPPORTED_ABIS[0] : "Unknown";
+
+        tvDevice.setText(deviceName);
+        tvOs.setText(osVersion + "\nABI: " + abi + "\nDevice ID: " + getDeviceId());
+    }
+
+    private String getDeviceId() {
+        try {
+            return android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        } catch (Exception e) {
+            return "Unknown";
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONObject;
+import com.bumptech.glide.Glide;
 
 public class UserProfileActivity extends AppCompatActivity {
     private TextView tvName, tvUsername;
@@ -41,9 +42,28 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onSuccess(JSONObject user) {
                 String name = user.optString("display_name", "User");
                 String username = user.optString("username", "");
+                String bio = user.optString("bio", "");
+                String photoUrl = user.optString("photo_url", "");
+                String privacyPhoto = user.optString("privacy_profile_photo", "everybody");
 
                 tvName.setText(name.isEmpty() ? "User" : name);
                 tvUsername.setText(username.isEmpty() ? "@user" : "@" + username);
+                
+                if (!bio.isEmpty() && tvStatus != null) {
+                    tvStatus.setText(bio);
+                }
+                
+                // Privasi & Foto
+                boolean canSeePhoto = true;
+                if (!isSelf && "nobody".equals(privacyPhoto)) {
+                    canSeePhoto = false;
+                }
+                
+                if (canSeePhoto && !photoUrl.isEmpty() && ivPhoto != null) {
+                    com.bumptech.glide.Glide.with(UserProfileActivity.this).load(photoUrl).into(ivPhoto);
+                } else if (ivPhoto != null) {
+                    ivPhoto.setImageResource(android.R.drawable.ic_menu_myplaces);
+                }
             }
             @Override public void onError(String message) {}
         });
